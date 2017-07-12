@@ -7,8 +7,8 @@ import android.util.Log;
  */
 
 public class Location {
-    public int x;
-    public int y;
+    int x;
+    int y;
     public float xOffset;
     public float yOffset;
 

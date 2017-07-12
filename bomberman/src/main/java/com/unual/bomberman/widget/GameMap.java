@@ -5,12 +5,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import com.unual.bomberman.R;
+import com.unual.bomberman.bean.BaseModel;
 import com.unual.bomberman.bean.Bomber;
+import com.unual.bomberman.bean.EmyBalloon;
 import com.unual.bomberman.interfaces.IControl;
+import com.unual.bomberman.interfaces.IDirection;
 
 import java.util.Random;
 
@@ -18,24 +20,24 @@ import java.util.Random;
  * Created by unual on 2017/7/7.
  */
 
-public class GameMap {
+public class GameMap implements IDirection {
     public static final int TYPE_BACKGROUND = 0;
     public static final int TYPE_WALL = 1;
     public static final int TYPE_BRICK = 2;
     private int mapWidth, mapHeight;
     private int perWidth, perHeight;
     private GameConfig gameConfig;
-    private byte[][] mapInfo;
+    private byte[][] mapInfos;
     private Bitmap background;
     private Bitmap brick;
     private Bitmap wall;
     private Bitmap button;
     private Bomber bomber;
-
+    private BaseModel ball;
     private Rect up, left, down, right, action;
 
     public GameMap(Context context, int width, int height) {
-        this.gameConfig = new GameConfig();
+        this.gameConfig = GameConfig.getInstance();
         mapHeight = height;
         mapWidth = width;
         perWidth = width / gameConfig.width;
@@ -49,8 +51,9 @@ public class GameMap {
         brick = Bitmap.createScaledBitmap(brick, perWidth, perHeight, false);
         wall = Bitmap.createScaledBitmap(wall, perWidth, perHeight, false);
         button = Bitmap.createScaledBitmap(button, perWidth, perHeight, false);
-        mapInfo = new byte[gameConfig.width][gameConfig.height];
-        bomber = new Bomber(context, perWidth, perHeight);
+        mapInfos = new byte[gameConfig.width][gameConfig.height];
+        bomber = new Bomber(context, R.drawable.game_view_man, this, perWidth, perHeight);
+        ball = new EmyBalloon(context, R.drawable.game_view_ball, this, perWidth, perHeight);
 
 //        canvas.drawBitmap(button, 2 * perWidth, 5 * perHeight, null);
 //        canvas.drawBitmap(button, 1 * perWidth, 6 * perHeight, null);
@@ -71,15 +74,15 @@ public class GameMap {
         for (y = 0; y < gameConfig.height; y++) {
             for (x = 0; x < gameConfig.width; x++) {
                 if (x == 0 || y == 0 || x == gameConfig.width - 1 || y == gameConfig.height - 1) {
-                    mapInfo[x][y] = TYPE_BRICK;
+                    mapInfos[x][y] = TYPE_BRICK;
                 } else if (x % 2 == 0 && y % 2 == 0) {
-                    mapInfo[x][y] = TYPE_BRICK;
+                    mapInfos[x][y] = TYPE_BRICK;
                 } else {
                     a = random.nextInt(100);
                     if (a % p == 0) {
-                        mapInfo[x][y] = TYPE_WALL;
+                        mapInfos[x][y] = TYPE_WALL;
                     } else {
-                        mapInfo[x][y] = TYPE_BACKGROUND;
+                        mapInfos[x][y] = TYPE_BACKGROUND;
                     }
                 }
             }
@@ -90,7 +93,7 @@ public class GameMap {
         int x, y;
         for (y = 0; y < gameConfig.height; y++) {
             for (x = 0; x < gameConfig.width; x++) {
-                switch (mapInfo[x][y]) {
+                switch (mapInfos[x][y]) {
                     case TYPE_BRICK:
                         canvas.drawBitmap(brick, x * perWidth, y * perHeight, null);
                         break;
@@ -110,7 +113,7 @@ public class GameMap {
     }
 
     private void drawEnemy(Canvas canvas) {
-
+        ball.draw(canvas);
     }
 
     public int getButton(int x, int y) {
@@ -212,5 +215,53 @@ public class GameMap {
                 bomber.setAction(IControl.ACTION_A);
                 break;
         }
+    }
+
+    @Override
+    public boolean canWalkUp(int x, int y) {
+        if (y < 1) {
+            return false;
+        }
+        int mapInfo = mapInfos[x][y - 1];
+        if (mapInfo == TYPE_BACKGROUND) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean canWalkLeft(int x, int y) {
+        if (x < 1) {
+            return false;
+        }
+        int mapInfo = mapInfos[x - 1][y];
+        if (mapInfo == TYPE_BACKGROUND) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean canWalkRight(int x, int y) {
+        if (x >= gameConfig.width - 1) {
+            return false;
+        }
+        int mapInfo = mapInfos[x + 1][y];
+        if (mapInfo == TYPE_BACKGROUND) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean canWalkDown(int x, int y) {
+        if (y >= gameConfig.height - 1) {
+            return false;
+        }
+        int mapInfo = mapInfos[x][y + 1];
+        if (mapInfo == TYPE_BACKGROUND) {
+            return true;
+        }
+        return false;
     }
 }

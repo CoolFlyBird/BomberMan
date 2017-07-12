@@ -9,6 +9,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.unual.bomberman.interfaces.IControl;
+import com.unual.bomberman.widget.GameConfig;
 import com.unual.bomberman.widget.GameMap;
 
 /**
@@ -38,14 +39,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private void generateGameMap(int width, int height) {
         gameMap = new GameMap(getContext(), width, height);
-        gameMap.generateGameMap(10);
+        gameMap.generateGameMap(4);
         new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
                     try {
                         renderMap();
-                        Thread.currentThread().sleep(1000 / 10);
+                        Thread.currentThread().sleep(1000 / GameConfig.getInstance().fps);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
