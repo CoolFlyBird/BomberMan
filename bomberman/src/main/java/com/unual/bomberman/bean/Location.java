@@ -13,25 +13,28 @@ public class Location {
     public float yOffset;
 
     public void update() {
-        int tempx = 0, tempy = 0;
-        if (xOffset >= 1 || yOffset >= 1) {
-            tempx = (int) Math.floor(xOffset);
-            tempy = (int) Math.floor(yOffset);
-        } else if (xOffset - 10e-6 <= -1 || yOffset - 10e-6 <= -1) {
-            xOffset -= 10e-6;
-            yOffset -= 10e-6;
-            tempx = (int) Math.ceil(xOffset);
-            tempy = (int) Math.ceil(yOffset);
+        if (xOffset > 0) {
+            if (Math.abs(xOffset - 1) < 10e-6) {
+                xOffset = 0.0f;
+                x += 1;
+            }
+        } else {
+            if (Math.abs(xOffset + 1) < 10e-6) {
+                xOffset = 0.0f;
+                x -= 1;
+            }
         }
-        x += tempx;
-        y += tempy;
-        xOffset = xOffset - tempx;
-        yOffset = yOffset - tempy;
-        if (Math.abs(xOffset) < 10e-5) {
-            xOffset = 0.0f;
-        }
-        if (Math.abs(yOffset) < 10e-5) {
-            yOffset = 0.0f;
+
+        if (yOffset > 0) {
+            if (Math.abs(yOffset - 1) < 10e-6) {
+                yOffset = 0.0f;
+                y += 1;
+            }
+        } else {
+            if (Math.abs(yOffset + 1) < 10e-6) {
+                yOffset = 0.0f;
+                y -= 1;
+            }
         }
     }
 }

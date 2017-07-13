@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.unual.bomberman.R;
@@ -32,9 +33,9 @@ public class GameMap implements IDirection {
     private Bitmap brick;
     private Bitmap wall;
     private Bitmap button;
-    private Bomber bomber;
-    private BaseModel ball;
-    private Rect up, left, down, right, action;
+//    private Bomber bomber;
+//    private BaseModel ball1, ball2, ball3, ball4, ball5, ball6, ball7, ball8, ball9, ball0;
+//    private Rect up, left, down, right, action;
 
     public GameMap(Context context, int width, int height) {
         this.gameConfig = GameConfig.getInstance();
@@ -52,20 +53,23 @@ public class GameMap implements IDirection {
         wall = Bitmap.createScaledBitmap(wall, perWidth, perHeight, false);
         button = Bitmap.createScaledBitmap(button, perWidth, perHeight, false);
         mapInfos = new byte[gameConfig.width][gameConfig.height];
-        bomber = new Bomber(context, R.drawable.game_view_man, this, perWidth, perHeight);
-        ball = new EmyBalloon(context, R.drawable.game_view_ball, this, perWidth, perHeight);
+//        bomber = new Bomber(context, R.drawable.game_view_man, this, perWidth, perHeight);
+//        ball1 = new EmyBalloon(context, R.drawable.game_view_ball, this, perWidth, perHeight);
+//        ball2 = new EmyBalloon(context, R.drawable.game_view_ball, this, perWidth, perHeight);
+//        ball3 = new EmyBalloon(context, R.drawable.game_view_ball, this, perWidth, perHeight);
+//        ball4 = new EmyBalloon(context, R.drawable.game_view_ball, this, perWidth, perHeight);
+//        ball5 = new EmyBalloon(context, R.drawable.game_view_ball, this, perWidth, perHeight);
+//        ball6 = new EmyBalloon(context, R.drawable.game_view_ball, this, perWidth, perHeight);
+//        ball7 = new EmyBalloon(context, R.drawable.game_view_ball, this, perWidth, perHeight);
+//        ball8 = new EmyBalloon(context, R.drawable.game_view_ball, this, perWidth, perHeight);
+//        ball9 = new EmyBalloon(context, R.drawable.game_view_ball, this, perWidth, perHeight);
+//        ball0 = new EmyBalloon(context, R.drawable.game_view_ball, this, perWidth, perHeight);
 
-//        canvas.drawBitmap(button, 2 * perWidth, 5 * perHeight, null);
-//        canvas.drawBitmap(button, 1 * perWidth, 6 * perHeight, null);
-//        canvas.drawBitmap(button, 3 * perWidth, 6 * perHeight, null);
-//        canvas.drawBitmap(button, 2 * perWidth, 7 * perHeight, null);
-//        canvas.drawBitmap(button, 14 * perWidth, 6 * perHeight, null);
-        up = new Rect(2 * perWidth, 5 * perHeight, 3 * perWidth, 6 * perHeight);
-        left = new Rect(1 * perWidth, 6 * perHeight, 2 * perWidth, 7 * perHeight);
-        right = new Rect(3 * perWidth, 6 * perHeight, 4 * perWidth, 7 * perHeight);
-        down = new Rect(2 * perWidth, 7 * perHeight, 3 * perWidth, 8 * perHeight);
-
-        action = new Rect(14 * perWidth, 6 * perHeight, 15 * perWidth, 7 * perHeight);
+//        up = new Rect(2 * perWidth, 5 * perHeight, 3 * perWidth, 6 * perHeight);
+//        left = new Rect(1 * perWidth, 6 * perHeight, 2 * perWidth, 7 * perHeight);
+//        right = new Rect(3 * perWidth, 6 * perHeight, 4 * perWidth, 7 * perHeight);
+//        down = new Rect(2 * perWidth, 7 * perHeight, 3 * perWidth, 8 * perHeight);
+//        action = new Rect(14 * perWidth, 6 * perHeight, 15 * perWidth, 7 * perHeight);
     }
 
     public void generateGameMap(int p) {
@@ -89,6 +93,10 @@ public class GameMap implements IDirection {
         }
     }
 
+    public byte[][] getMapInfo() {
+        return mapInfos;
+    }
+
     private void drawMap(Canvas canvas) {
         int x, y;
         for (y = 0; y < gameConfig.height; y++) {
@@ -109,20 +117,30 @@ public class GameMap implements IDirection {
     }
 
     private void drawMan(Canvas canvas) {
-        bomber.draw(canvas);
+//        bomber.draw(canvas);
     }
 
     private void drawEnemy(Canvas canvas) {
-        ball.draw(canvas);
+//        ball1.draw(canvas);
+//        ball2.draw(canvas);
+//        ball3.draw(canvas);
+//        ball4.draw(canvas);
+//        ball5.draw(canvas);
+//        ball6.draw(canvas);
+//        ball7.draw(canvas);
+//        ball8.draw(canvas);
+//        ball9.draw(canvas);
+//        ball0.draw(canvas);
     }
 
     public int getButton(int x, int y) {
-        if (up.contains(x, y)) return IControl.DIRECTION_UP;
-        else if (left.contains(x, y)) return IControl.DIRECTION_LEFT;
-        else if (right.contains(x, y)) return IControl.DIRECTION_RIGHT;
-        else if (down.contains(x, y)) return IControl.DIRECTION_DOWN;
-        else if (action.contains(x, y)) return IControl.ACTION_A;
-        else return IControl.DIRECTION_NONE;
+//        if (up.contains(x, y)) return IControl.DIRECTION_UP;
+//        else if (left.contains(x, y)) return IControl.DIRECTION_LEFT;
+//        else if (right.contains(x, y)) return IControl.DIRECTION_RIGHT;
+//        else if (down.contains(x, y)) return IControl.DIRECTION_DOWN;
+//        else if (action.contains(x, y)) return IControl.ACTION_A;
+//        else
+        return IControl.DIRECTION_NONE;
     }
 
     private void drawButton(Canvas canvas) {
@@ -136,9 +154,9 @@ public class GameMap implements IDirection {
 
     public void draw(Canvas canvas) {
         drawMap(canvas);
-        drawMan(canvas);
-        drawEnemy(canvas);
-        drawButton(canvas);
+//        drawMan(canvas);
+//        drawEnemy(canvas);
+//        drawButton(canvas);
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -178,44 +196,48 @@ public class GameMap implements IDirection {
     }
 
     private void dealButtonDown(int button) {
-        switch (button) {
-            case IControl.DIRECTION_NONE:
-                bomber.setDirection(IControl.DIRECTION_NONE);
-                break;
-            case IControl.DIRECTION_UP:
-                bomber.setDirection(IControl.DIRECTION_UP);
-                break;
-            case IControl.DIRECTION_DOWN:
-                bomber.setDirection(IControl.DIRECTION_DOWN);
-                break;
-            case IControl.DIRECTION_LEFT:
-                bomber.setDirection(IControl.DIRECTION_LEFT);
-                break;
-            case IControl.DIRECTION_RIGHT:
-                bomber.setDirection(IControl.DIRECTION_RIGHT);
-                break;
-        }
+//        switch (button) {
+//            case IControl.DIRECTION_NONE:
+//                bomber.setDirection(IControl.DIRECTION_NONE);
+//                break;
+//            case IControl.DIRECTION_UP:
+//                bomber.setDirection(IControl.DIRECTION_UP);
+//                break;
+//            case IControl.DIRECTION_DOWN:
+//                bomber.setDirection(IControl.DIRECTION_DOWN);
+//                break;
+//            case IControl.DIRECTION_LEFT:
+//                bomber.setDirection(IControl.DIRECTION_LEFT);
+//                break;
+//            case IControl.DIRECTION_RIGHT:
+//                bomber.setDirection(IControl.DIRECTION_RIGHT);
+//                break;
+//        }
     }
 
     private void dealButtonUp(int button) {
-        switch (button) {
-            case IControl.DIRECTION_UP:
-                bomber.setDirection(IControl.DIRECTION_NONE);
-                break;
-            case IControl.DIRECTION_DOWN:
-                bomber.setDirection(IControl.DIRECTION_NONE);
-                break;
-            case IControl.DIRECTION_LEFT:
-                bomber.setDirection(IControl.DIRECTION_NONE);
-                break;
-            case IControl.DIRECTION_RIGHT:
-                bomber.setDirection(IControl.DIRECTION_NONE);
-                break;
-            case IControl.ACTION_A:
-                bomber.setAction(IControl.ACTION_A);
-                break;
-        }
+//        switch (button) {
+//            case IControl.DIRECTION_UP:
+//                bomber.setDirection(IControl.DIRECTION_NONE);
+//                break;
+//            case IControl.DIRECTION_DOWN:
+//                bomber.setDirection(IControl.DIRECTION_NONE);
+//                break;
+//            case IControl.DIRECTION_LEFT:
+//                bomber.setDirection(IControl.DIRECTION_NONE);
+//                break;
+//            case IControl.DIRECTION_RIGHT:
+//                bomber.setDirection(IControl.DIRECTION_NONE);
+//                break;
+//            case IControl.ACTION_A:
+//                bomber.setAction(IControl.ACTION_A);
+//                break;
+//        }
     }
+
+//    public IControl getIControl() {
+//        return bomber;
+//    }
 
     @Override
     public boolean canWalkUp(int x, int y) {

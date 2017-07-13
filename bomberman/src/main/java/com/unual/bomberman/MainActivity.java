@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 
+import com.unual.bomberman.view.ControlView;
 import com.unual.bomberman.view.GameView;
 
 public class MainActivity extends Activity {
@@ -19,8 +20,11 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        GameView gameView = new GameView(this);
-        setContentView(gameView);
+        setContentView(R.layout.activity_main);
+        GameView gameview = (GameView) findViewById(R.id.gameview);
+        ControlView control = (ControlView) findViewById(R.id.control);
+        gameview.addGameMapCallback(control);
+        control.setZOrderOnTop(true);
     }
 
     @Override

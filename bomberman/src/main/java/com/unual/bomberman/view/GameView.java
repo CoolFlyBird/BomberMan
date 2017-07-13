@@ -3,12 +3,10 @@ package com.unual.bomberman.view;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
-import android.util.Log;
-import android.view.MotionEvent;
+import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.unual.bomberman.interfaces.IControl;
 import com.unual.bomberman.widget.GameConfig;
 import com.unual.bomberman.widget.GameMap;
 
@@ -19,45 +17,59 @@ import com.unual.bomberman.widget.GameMap;
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder mHolder;
     private GameMap gameMap;
+    private boolean onPause;
+    private long timePerFrame;
+    private GameMapCallback callback;
 
     public GameView(Context context) {
         super(context);
         init();
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return gameMap.onTouchEvent(event);
+    public GameView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init();
     }
 
     private void init() {
         mHolder = getHolder();
         mHolder.setFormat(PixelFormat.TRANSPARENT);
         mHolder.addCallback(this);
+        timePerFrame = 1000 / GameConfig.getInstance().fps;
     }
 
+    public void addGameMapCallback(GameMapCallback callback) {
+        this.callback = callback;
+    }
 
     private void generateGameMap(int width, int height) {
         gameMap = new GameMap(getContext(), width, height);
         gameMap.generateGameMap(4);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        renderMap();
-                        Thread.currentThread().sleep(1000 / GameConfig.getInstance().fps);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }).start();
+        renderMap();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while (true) {
+//                    try {
+//                        if (onPause) break;
+//                        long startTime = System.currentTimeMillis();
+//                        renderMap();
+//                        long renderTime = System.currentTimeMillis() - startTime;
+//                        if (renderTime < timePerFrame)
+//                            Thread.currentThread().sleep(timePerFrame - renderTime);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }).start();
+        callback.onGameMapCreate(gameMap);
     }
 
     private void renderMap() {
         Canvas canvas = mHolder.lockCanvas();
         gameMap.draw(canvas);
+//        drawMap(canvas);
         mHolder.unlockCanvasAndPost(canvas);
     }
 
@@ -66,6 +78,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 //        Canvas canvas = mHolder.lockCanvas();
 //        canvas.drawColor(getContext().getResources().getColor(R.color.game_background));
 //        mHolder.unlockCanvasAndPost(canvas);
+        onPause = false;
     }
 
     @Override
@@ -75,6 +88,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
+        onPause = true;
+    }
 
+    public interface GameMapCallback {
+        void onGameMapCreate(GameMap gameMap);
     }
 }

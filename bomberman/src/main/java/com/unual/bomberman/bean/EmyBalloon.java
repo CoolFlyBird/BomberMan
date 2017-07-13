@@ -16,9 +16,12 @@ import java.util.Random;
 
 public class EmyBalloon extends BaseModel {
     private static Random random = new Random();
+    private static final int PERCENT = 4;
+    private int walkOverCrossRoadCount = 0;
 
     public EmyBalloon(Context context, int resId, IDirection iDirection, int perWidth, int perHeight) {
         super(context, resId, iDirection, perWidth, perHeight);
+        speed_value = (float) (1.0 / LEVEL[0]);
     }
 
     @Override
@@ -27,18 +30,23 @@ public class EmyBalloon extends BaseModel {
         int y = random.nextInt(GameConfig.getInstance().height - 2) + 1;
         location.x = x;
         location.y = y;
-        speed_value = GameConfig.getInstance().pf * 4;
-//        speed_value = 0.1f;
-        Log.e("123", "ball:" + speed_value);
+        setRandomDirection();
+    }
+
+    @Override
+    public void onCrossRoad() {
+        walkOverCrossRoadCount++;
+        if (walkOverCrossRoadCount % PERCENT == 0)
+            setRandomDirection();
+    }
+
+    public void onDirectionError() {
         setRandomDirection();
     }
 
     private void setRandomDirection() {
         nextDirection = random.nextInt(4) + 1;
-    }
-
-    public void onDirectionError() {
-        setRandomDirection();
+        walkOverCrossRoadCount = random.nextInt(PERCENT);
     }
 
     @Override

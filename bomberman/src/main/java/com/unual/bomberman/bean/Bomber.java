@@ -21,9 +21,7 @@ public class Bomber extends BaseModel implements IControl {
 
     public Bomber(Context context, int iconId, IDirection iDirection, int perWidth, int perHeight) {
         super(context, iconId, iDirection, perWidth, perHeight);
-        speed_value = GameConfig.getInstance().pf * 2;
-//        speed_value = 0.1f;
-        Log.e("123", "ball:" + speed_value);
+        speed_value = (float) (1.0 / LEVEL[0]);
     }
 
     @Override
@@ -33,8 +31,21 @@ public class Bomber extends BaseModel implements IControl {
     }
 
     @Override
+    public void onCrossRoad() {
+
+    }
+
+    @Override
     public void onDirectionError() {
 
+    }
+
+    @Override
+    public boolean onPoint() {
+        if ((Math.abs(location.xOffset) <= 10e-13) && (Math.abs(location.yOffset) <= 10e-13)) {
+            return true;
+        }
+        return false;
     }
 
     @Override

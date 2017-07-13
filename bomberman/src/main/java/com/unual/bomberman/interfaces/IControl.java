@@ -11,7 +11,6 @@ public interface IControl {
     int DIRECTION_LEFT = 3;
     int DIRECTION_RIGHT = 4;
 
-    int ACTION_NONE = 5;
     int ACTION_A = 6;
 
     void setAction(int action);
