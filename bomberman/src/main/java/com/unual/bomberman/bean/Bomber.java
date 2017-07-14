@@ -1,26 +1,21 @@
 package com.unual.bomberman.bean;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.media.AudioManager;
-import android.media.SoundPool;
 import android.util.Log;
 
-import com.unual.bomberman.R;
 import com.unual.bomberman.interfaces.IControl;
 import com.unual.bomberman.interfaces.IDirection;
-import com.unual.bomberman.widget.GameConfig;
+import com.unual.bomberman.view.MapView;
 
 /**
  * Created by unual on 2017/7/12.
  */
 
-public class Bomber extends BaseModel implements IControl {
+public class Bomber extends MoveModel implements IControl {
+    private boolean setBomb;
 
-    public Bomber(Context context, int iconId, IDirection iDirection, int perWidth, int perHeight) {
-        super(context, iconId, iDirection, perWidth, perHeight);
+    public Bomber(int iconId, IDirection iDirection, int perWidth, int perHeight) {
+        super(iconId, iDirection, perWidth, perHeight);
         speed_value = (float) (1.0 / LEVEL[0]);
     }
 
@@ -29,6 +24,16 @@ public class Bomber extends BaseModel implements IControl {
         location.x = 1;
         location.y = 1;
     }
+
+
+    public boolean isSetBomb() {
+        return setBomb;
+    }
+
+    public void setSetBomb(boolean setBomb) {
+        this.setBomb = setBomb;
+    }
+
 
     @Override
     public void onCrossRoad() {
@@ -41,16 +46,8 @@ public class Bomber extends BaseModel implements IControl {
     }
 
     @Override
-    public boolean onPoint() {
-        if ((Math.abs(location.xOffset) <= 10e-13) && (Math.abs(location.yOffset) <= 10e-13)) {
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     public void setAction(int action) {
-        Log.e("123", "set bomber");
+
     }
 
     @Override

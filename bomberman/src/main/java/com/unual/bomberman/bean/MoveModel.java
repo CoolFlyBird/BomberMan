@@ -1,38 +1,28 @@
 package com.unual.bomberman.bean;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.util.Log;
 
 import com.unual.bomberman.AppCache;
 import com.unual.bomberman.interfaces.IControl;
 import com.unual.bomberman.interfaces.IDirection;
 
 /**
- * Created by unual on 2017/7/7.
+ * Created by unual on 2017/7/14.
  */
 
-public abstract class BaseModel {
+public abstract class MoveModel extends Model {
     protected static int[] LEVEL = {15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5};
-    protected Bitmap icon;
     protected int nextDirection;
-    protected Location location;
     protected IDirection iDirection;
     protected float speed_value;
     private Speed speed;
-    private int perWidth, perHeight;
 
-    public BaseModel(int resId, IDirection iDirection, int perWidth, int perHeight) {
-        this.perWidth = perWidth;
-        this.perHeight = perHeight;
-        icon = BitmapFactory.decodeResource(AppCache.getInstance().getContext().getResources(), resId);
-        icon = Bitmap.createScaledBitmap(icon, perWidth, perHeight, false);
+    public MoveModel(int resId, IDirection iDirection, int perWidth, int perHeight) {
+        super(resId, perWidth, perHeight);
         this.iDirection = iDirection;
-        location = new Location();
         speed = new Speed();
-        initLocation(location);
     }
 
     public abstract void initLocation(Location location);

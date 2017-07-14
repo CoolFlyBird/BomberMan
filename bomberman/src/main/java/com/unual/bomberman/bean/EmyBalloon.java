@@ -2,11 +2,9 @@ package com.unual.bomberman.bean;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.util.Log;
 
-import com.unual.bomberman.interfaces.IControl;
+import com.unual.bomberman.AppCache;
 import com.unual.bomberman.interfaces.IDirection;
-import com.unual.bomberman.widget.GameConfig;
 
 import java.util.Random;
 
@@ -14,20 +12,19 @@ import java.util.Random;
  * Created by unual on 2017/7/12.
  */
 
-public class EmyBalloon extends BaseModel {
-    private static Random random = new Random();
+public class EmyBalloon extends MoveModel {
     private static final int PERCENT = 4;
     private int walkOverCrossRoadCount = 0;
 
-    public EmyBalloon(Context context, int resId, IDirection iDirection, int perWidth, int perHeight) {
-        super(context, resId, iDirection, perWidth, perHeight);
+    public EmyBalloon(int resId, IDirection iDirection, int perWidth, int perHeight) {
+        super(resId, iDirection, perWidth, perHeight);
         speed_value = (float) (1.0 / LEVEL[0]);
     }
 
     @Override
     public void initLocation(Location location) {
-        int x = random.nextInt(GameConfig.getInstance().width - 2) + 1;
-        int y = random.nextInt(GameConfig.getInstance().height - 2) + 1;
+        int x = AppCache.getInstance().getGameConfig().random.nextInt(AppCache.getInstance().getGameConfig().getWidthSize() - 2) + 1;
+        int y = AppCache.getInstance().getGameConfig().random.nextInt(AppCache.getInstance().getGameConfig().getHeightSize() - 2) + 1;
         location.x = x;
         location.y = y;
         setRandomDirection();
@@ -45,8 +42,8 @@ public class EmyBalloon extends BaseModel {
     }
 
     private void setRandomDirection() {
-        nextDirection = random.nextInt(4) + 1;
-        walkOverCrossRoadCount = random.nextInt(PERCENT);
+        nextDirection = AppCache.getInstance().getGameConfig().random.nextInt(4) + 1;
+        walkOverCrossRoadCount = AppCache.getInstance().getGameConfig().random.nextInt(PERCENT);
     }
 
     @Override

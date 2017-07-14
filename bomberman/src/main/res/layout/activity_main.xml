@@ -3,13 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.unual.bomberman.view.GameView
-        android:id="@+id/gameview"
+    <com.unual.bomberman.view.MapView
+        android:id="@+id/mapview"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.unual.bomberman.view.ControlView
-        android:id="@+id/control"
+    <com.unual.bomberman.view.GameView
+        android:id="@+id/gameview"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </FrameLayout>
