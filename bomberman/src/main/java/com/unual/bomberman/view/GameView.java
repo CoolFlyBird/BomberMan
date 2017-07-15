@@ -11,11 +11,14 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.unual.bomberman.bean.BaseModel;
+import com.unual.bomberman.R;
+import com.unual.bomberman.bean.Bomb;
 import com.unual.bomberman.bean.Bomber;
+import com.unual.bomberman.bean.EmyBalloon;
 import com.unual.bomberman.bean.MoveModel;
 import com.unual.bomberman.interfaces.IControl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,6 +38,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Map
     private long timePerFrame;
     private Bomber bomber;
     private List<MoveModel> emys;
+    private Bomb bomb;
+    private Bomb.BombCallback callback;
 
     public GameView(Context context) {
         super(context);
@@ -161,16 +166,21 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Map
     }
 
 
-    private void initGame(MapView.GameConfig gameConfig) {
+    private void initGame(MapView.GameConfig gameConfig, Bomb.BombCallback callback) {
         int mapWidth = gameConfig.getMapWidth();
         int mapHeight = gameConfig.getMapHeight();
+        this.callback = callback;
         timePerFrame = 1000 / gameConfig.mapFps;
         rx = r + padding;
         ry = mapHeight - r - padding;
         arx = mapWidth - ar - apadding;
         ary = mapHeight - ar - apadding;
-        bomber = gameConfig.getBomber();
-        emys = gameConfig.getEmyList();
+        bomb = new Bomb(callback, gameConfig.mapInfo, R.drawable.game_view_man, gameConfig.perWidth, gameConfig.perHeight);
+        bomber = new Bomber(bomb, gameConfig.mapInfo, R.drawable.game_view_man, gameConfig.perWidth, gameConfig.perHeight);
+        emys = new ArrayList<>();
+        for (int i = 0; i < gameConfig.getEmyCount(); i++) {
+            emys.add(new EmyBalloon(R.drawable.game_view_ball, gameConfig.mapInfo, gameConfig.perWidth, gameConfig.perHeight));
+        }
     }
 
     private void startRender() {
@@ -200,6 +210,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Map
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.SRC);
         drawMan(canvas);
         drawEnemy(canvas);
+        drawBomb(canvas);
         drawButton(canvas);
         mHolder.unlockCanvasAndPost(canvas);
     }
@@ -222,6 +233,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Map
         }
     }
 
+    private void drawBomb(Canvas canvas) {
+        bomb.draw(canvas);
+    }
+
+
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         onPause = false;
@@ -238,7 +254,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Map
     }
 
     @Override
-    public void onMapConfiged(MapView.GameConfig gameConfig) {
-        initGame(gameConfig);
+    public void onMapConfiged(MapView.GameConfig gameConfig, Bomb.BombCallback callback) {
+        initGame(gameConfig, callback);
     }
 }

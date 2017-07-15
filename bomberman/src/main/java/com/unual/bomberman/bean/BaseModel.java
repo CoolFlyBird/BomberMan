@@ -24,7 +24,7 @@ public abstract class BaseModel {
     private Speed speed;
     private int perWidth, perHeight;
 
-    public BaseModel(int resId, IDirection iDirection, int perWidth, int perHeight) {
+    public BaseModel(int resId, int perWidth, int perHeight) {
         this.perWidth = perWidth;
         this.perHeight = perHeight;
         icon = BitmapFactory.decodeResource(AppCache.getInstance().getContext().getResources(), resId);

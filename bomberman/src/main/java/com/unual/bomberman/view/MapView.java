@@ -12,23 +12,15 @@ import android.view.SurfaceView;
 
 import com.unual.bomberman.AppCache;
 import com.unual.bomberman.R;
-import com.unual.bomberman.bean.BaseModel;
 import com.unual.bomberman.bean.Bomb;
-import com.unual.bomberman.bean.Bomber;
-import com.unual.bomberman.bean.EmyBalloon;
-import com.unual.bomberman.bean.Model;
-import com.unual.bomberman.bean.MoveModel;
-import com.unual.bomberman.interfaces.IDirection;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**
  * Created by unual on 2017/7/6.
  */
 
-public class MapView extends SurfaceView implements SurfaceHolder.Callback {
+public class MapView extends SurfaceView implements SurfaceHolder.Callback, Bomb.BombCallback {
     private SurfaceHolder mHolder;
     private GameConfig gameConfig;
     private MapCallback callback;
@@ -59,15 +51,15 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback {
         for (y = 0; y < gameConfig.heightSize; y++) {
             for (x = 0; x < gameConfig.widthSize; x++) {
                 if (x == 0 || y == 0 || x == gameConfig.widthSize - 1 || y == gameConfig.heightSize - 1) {
-                    gameConfig.mapInfos[x][y] = gameConfig.TYPE_BRICK;
+                    gameConfig.mapInfo[x][y] = gameConfig.TYPE_BRICK;
                 } else if (x % 2 == 0 && y % 2 == 0) {
-                    gameConfig.mapInfos[x][y] = gameConfig.TYPE_BRICK;
+                    gameConfig.mapInfo[x][y] = gameConfig.TYPE_BRICK;
                 } else {
                     a = gameConfig.random.nextInt(100);
                     if (a % gameConfig.percent == 0) {
-                        gameConfig.mapInfos[x][y] = gameConfig.TYPE_WALL;
+                        gameConfig.mapInfo[x][y] = gameConfig.TYPE_WALL;
                     } else {
-                        gameConfig.mapInfos[x][y] = gameConfig.TYPE_BACKGROUND;
+                        gameConfig.mapInfo[x][y] = gameConfig.TYPE_BACKGROUND;
                     }
                 }
             }
@@ -89,10 +81,9 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback {
         canvas.drawColor(getResources().getColor(R.color.game_background));
         gameConfig.brick = Bitmap.createScaledBitmap(gameConfig.brick, perWidth, perHeight, false);
         gameConfig.wall = Bitmap.createScaledBitmap(gameConfig.wall, perWidth, perHeight, false);
-        gameConfig.mapInfos = new byte[gameConfig.widthSize][gameConfig.heightSize];
+        gameConfig.mapInfo = new byte[gameConfig.widthSize][gameConfig.heightSize];
         generateMapInfos();
-        gameConfig.setModel();
-        callback.onMapConfiged(gameConfig);
+        callback.onMapConfiged(gameConfig, this);
         renderMap();
     }
 
@@ -106,7 +97,7 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback {
         int x, y;
         for (y = 0; y < gameConfig.heightSize; y++) {
             for (x = 0; x < gameConfig.widthSize; x++) {
-                switch (gameConfig.mapInfos[x][y]) {
+                switch (gameConfig.mapInfo[x][y]) {
                     case GameConfig.TYPE_BRICK:
                         canvas.drawBitmap(gameConfig.brick, x * gameConfig.perWidth, y * gameConfig.perHeight, null);
                         break;
@@ -114,6 +105,7 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback {
                     case GameConfig.TYPE_PROPS:
                         canvas.drawBitmap(gameConfig.wall, x * gameConfig.perWidth, y * gameConfig.perHeight, null);
                         break;
+                    case GameConfig.TYPE_FIRE:
                     case GameConfig.TYPE_BACKGROUND:
                         canvas.drawBitmap(gameConfig.background, x * gameConfig.perWidth, y * gameConfig.perHeight, null);
                         break;
@@ -128,7 +120,7 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        if (gameConfig.mapInfos == null) {
+        if (gameConfig.mapInfo == null) {
             generateConfig(width, height);
         } else {
             renderMap();
@@ -139,51 +131,81 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceDestroyed(SurfaceHolder holder) {
     }
 
+    @Override
+    public void onFireOn(int x, int y, int length) {
+        gameConfig.mapInfo[x][y] = GameConfig.TYPE_BACKGROUND;
+        if (x - length > 0 && gameConfig.mapInfo[x - length][y] == GameConfig.TYPE_WALL) {
+            gameConfig.mapInfo[x - length][y] = GameConfig.TYPE_FIRE;
+        }
 
-    public static class GameConfig implements IDirection {
+        if (x + length < GameConfig.widthSize - 1 && gameConfig.mapInfo[x + length][y] == GameConfig.TYPE_WALL) {
+            gameConfig.mapInfo[x + length][y] = GameConfig.TYPE_FIRE;
+        }
+
+        if (y - length > 0 && gameConfig.mapInfo[x][y - length] == GameConfig.TYPE_WALL) {
+            gameConfig.mapInfo[x][y - length] = GameConfig.TYPE_FIRE;
+        }
+
+        if (y + length < GameConfig.heightSize - 1 && gameConfig.mapInfo[x][y + length] == GameConfig.TYPE_WALL) {
+            gameConfig.mapInfo[x][y + length] = GameConfig.TYPE_FIRE;
+        }
+        renderMap();
+    }
+
+    @Override
+    public void onFireOff(int x, int y, int length) {
+        gameConfig.mapInfo[x][y] = GameConfig.TYPE_BACKGROUND;
+        if (x - length > 0 && gameConfig.mapInfo[x - length][y] == GameConfig.TYPE_FIRE) {
+            gameConfig.mapInfo[x - length][y] = GameConfig.TYPE_BACKGROUND;
+        }
+
+
+        if (x + length < GameConfig.widthSize - 1 && gameConfig.mapInfo[x + length][y] == GameConfig.TYPE_FIRE) {
+            gameConfig.mapInfo[x + length][y] = GameConfig.TYPE_BACKGROUND;
+        }
+
+        if (y - length > 0 && gameConfig.mapInfo[x][y - length] == GameConfig.TYPE_FIRE) {
+            gameConfig.mapInfo[x][y - length] = GameConfig.TYPE_BACKGROUND;
+        }
+
+        if (y + length < GameConfig.heightSize - 1 && gameConfig.mapInfo[x][y + length] == GameConfig.TYPE_FIRE) {
+            gameConfig.mapInfo[x][y + length] = GameConfig.TYPE_BACKGROUND;
+        }
+        renderMap();
+    }
+
+
+    public static class GameConfig {
         public Random random = new Random(47);
         public static final byte TYPE_BACKGROUND = 0;
-        public static final byte TYPE_PROPS = 1;
-        public static final byte TYPE_WALL = 2;
-        public static final byte TYPE_BRICK = 3;
+        public static final byte TYPE_TEMP = 1;
+        public static final byte TYPE_PROPS = 2;
+        public static final byte TYPE_FIRE = 3;
+        public static final byte TYPE_WALL = 4;
+        public static final byte TYPE_BRICK = 5;
+        public static int widthSize = 21;
+        public static int heightSize = 13;
+        public static int mapFps = 30;
         int mapWidth, mapHeight;
         int perWidth, perHeight;
-        int widthSize, heightSize;
-        byte[][] mapInfos;
-        int mapFps;
+        byte[][] mapInfo;
         int percent;
         Bitmap background;
         Bitmap brick;
         Bitmap wall;
         int mapLevel;
         int emyCount;
-        Bomber bomber;
-        List<MoveModel> emys;
 
         public GameConfig() {
-            this.widthSize = 21;
-            this.heightSize = 13;
-            this.mapFps = 30;
             this.percent = 3;
             this.mapLevel = 1;
             this.emyCount = 6;
         }
 
-        private void setModel() {
-            bomber = new Bomber(R.drawable.game_view_man, this, perWidth, perHeight);
-            emys = new ArrayList<>();
-            for (int i = 0; i < emyCount; i++) {
-                emys.add(new EmyBalloon(R.drawable.game_view_ball, this, perWidth, perHeight));
-            }
+        public int getEmyCount() {
+            return emyCount;
         }
 
-        public Bomber getBomber() {
-            return bomber;
-        }
-
-        public List<MoveModel> getEmyList() {
-            return emys;
-        }
 
         public int getWidthSize() {
             return widthSize;
@@ -210,60 +232,12 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         public void clean() {
-            mapInfos = null;
+            mapInfo = null;
         }
 
-
-        @Override
-        public boolean canWalkUp(int x, int y) {
-            if (y < 1) {
-                return false;
-            }
-            int mapInfo = mapInfos[x][y - 1];
-            if (mapInfo == TYPE_BACKGROUND) {
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        public boolean canWalkLeft(int x, int y) {
-            if (x < 1) {
-                return false;
-            }
-            int mapInfo = mapInfos[x - 1][y];
-            if (mapInfo == TYPE_BACKGROUND) {
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        public boolean canWalkRight(int x, int y) {
-            if (x >= widthSize - 1) {
-                return false;
-            }
-            int mapInfo = mapInfos[x + 1][y];
-            if (mapInfo == TYPE_BACKGROUND) {
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        public boolean canWalkDown(int x, int y) {
-            if (y >= heightSize - 1) {
-                return false;
-            }
-            int mapInfo = mapInfos[x][y + 1];
-            if (mapInfo == TYPE_BACKGROUND) {
-                return true;
-            }
-            return false;
-        }
     }
 
     public interface MapCallback {
-        void onMapConfiged(GameConfig gameConfig);
+        void onMapConfiged(GameConfig gameConfig, Bomb.BombCallback callback);
     }
 }

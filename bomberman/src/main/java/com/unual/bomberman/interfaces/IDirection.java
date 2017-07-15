@@ -1,7 +1,5 @@
 package com.unual.bomberman.interfaces;
 
-import com.unual.bomberman.bean.Location;
-
 /**
  * Created by unual on 2017/7/12.
  */

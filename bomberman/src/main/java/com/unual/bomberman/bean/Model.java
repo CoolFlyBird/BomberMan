@@ -44,7 +44,7 @@ public abstract class Model {
         return false;
     }
 
-    private boolean onPoint() {
+    private boolean onXYLine() {
         if ((Math.abs(location.xOffset) <= 10e-6) && (Math.abs(location.yOffset) <= 10e-6)) {
             return true;
         }

@@ -1,12 +1,9 @@
 package com.unual.bomberman.bean;
 
-import android.content.Context;
 import android.graphics.Canvas;
 
 import com.unual.bomberman.AppCache;
-import com.unual.bomberman.interfaces.IDirection;
-
-import java.util.Random;
+import com.unual.bomberman.view.MapView;
 
 /**
  * Created by unual on 2017/7/12.
@@ -16,8 +13,8 @@ public class EmyBalloon extends MoveModel {
     private static final int PERCENT = 4;
     private int walkOverCrossRoadCount = 0;
 
-    public EmyBalloon(int resId, IDirection iDirection, int perWidth, int perHeight) {
-        super(resId, iDirection, perWidth, perHeight);
+    public EmyBalloon(int resId, byte[][] mapInfo, int perWidth, int perHeight) {
+        super(resId, mapInfo, perWidth, perHeight);
         speed_value = (float) (1.0 / LEVEL[0]);
     }
 
@@ -37,6 +34,11 @@ public class EmyBalloon extends MoveModel {
             setRandomDirection();
     }
 
+    @Override
+    public void onPoint() {
+
+    }
+
     public void onDirectionError() {
         setRandomDirection();
     }
@@ -49,5 +51,53 @@ public class EmyBalloon extends MoveModel {
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
+    }
+
+    @Override
+    public boolean canWalkUp(int x, int y) {
+        if (y < 1) {
+            return false;
+        }
+        int mapInfo = mapInfos[x][y - 1];
+        if (mapInfo == MapView.GameConfig.TYPE_BACKGROUND) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean canWalkLeft(int x, int y) {
+        if (x < 1) {
+            return false;
+        }
+        int mapInfo = mapInfos[x - 1][y];
+        if (mapInfo == MapView.GameConfig.TYPE_BACKGROUND) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean canWalkRight(int x, int y) {
+        if (x >= MapView.GameConfig.widthSize - 1) {
+            return false;
+        }
+        int mapInfo = mapInfos[x + 1][y];
+        if (mapInfo == MapView.GameConfig.TYPE_BACKGROUND) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean canWalkDown(int x, int y) {
+        if (y >= MapView.GameConfig.heightSize - 1) {
+            return false;
+        }
+        int mapInfo = mapInfos[x][y + 1];
+        if (mapInfo == MapView.GameConfig.TYPE_BACKGROUND) {
+            return true;
+        }
+        return false;
     }
 }
