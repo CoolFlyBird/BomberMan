@@ -1,10 +1,11 @@
 package com.unual.bomberman.bean;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.util.Log;
 
 import com.unual.bomberman.AppCache;
-import com.unual.bomberman.interfaces.IControl;
+import com.unual.bomberman.R;
 import com.unual.bomberman.view.MapView;
 
 /**
@@ -16,13 +17,17 @@ public class EmyBall extends MoveModel {
     private int walkOverCrossRoadCount = 0;
     private int waitError = 0;
 
-    public EmyBall(int resId, byte[][] mapInfo, int perWidth, int perHeight) {
-        super(resId, mapInfo, perWidth, perHeight);
+    public EmyBall() {
+        location = new Location();
+        speed = new Speed();
         speed_value = (float) (1.0 / LEVEL[0]);
+        icon = BitmapFactory.decodeResource(AppCache.getInstance().getContext().getResources(), R.drawable.game_view_ball);
+        icon = Bitmap.createScaledBitmap(icon, perWidth, perHeight, false);
+        initLocation();
     }
 
     @Override
-    public void initLocation(Location location) {
+    public void initLocation() {
         int x = AppCache.getInstance().getGameConfig().random.nextInt(AppCache.getInstance().getGameConfig().getWidthSize() - 2) + 1;
         int y = AppCache.getInstance().getGameConfig().random.nextInt(AppCache.getInstance().getGameConfig().getHeightSize() - 2) + 1;
         location.x = x;
@@ -36,6 +41,7 @@ public class EmyBall extends MoveModel {
         if (walkOverCrossRoadCount % PERCENT == 0)
             setRandomDirection();
     }
+
 
     @Override
     public void onPoint() {
@@ -58,51 +64,4 @@ public class EmyBall extends MoveModel {
         super.draw(canvas);
     }
 
-    @Override
-    public boolean canWalkUp(int x, int y) {
-        if (y < 1) {
-            return false;
-        }
-        int mapInfo = mapInfos[x][y - 1];
-        if (mapInfo == MapView.GameConfig.TYPE_BACKGROUND) {
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean canWalkLeft(int x, int y) {
-        if (x < 1) {
-            return false;
-        }
-        int mapInfo = mapInfos[x - 1][y];
-        if (mapInfo == MapView.GameConfig.TYPE_BACKGROUND) {
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean canWalkRight(int x, int y) {
-        if (x >= MapView.GameConfig.widthSize - 1) {
-            return false;
-        }
-        int mapInfo = mapInfos[x + 1][y];
-        if (mapInfo == MapView.GameConfig.TYPE_BACKGROUND) {
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean canWalkDown(int x, int y) {
-        if (y >= MapView.GameConfig.heightSize - 1) {
-            return false;
-        }
-        int mapInfo = mapInfos[x][y + 1];
-        if (mapInfo == MapView.GameConfig.TYPE_BACKGROUND) {
-            return true;
-        }
-        return false;
-    }
 }

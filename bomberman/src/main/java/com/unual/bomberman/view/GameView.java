@@ -38,7 +38,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Map
     private long timePerFrame;
     private Bomber bomber;
     private List<MoveModel> emys;
-    private Bomb bomb;
+    private List<Bomb> bombs;
     private Bomb.BombCallback callback;
 
     public GameView(Context context) {
@@ -175,11 +175,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Map
         ry = mapHeight - r - padding;
         arx = mapWidth - ar - apadding;
         ary = mapHeight - ar - apadding;
-        bomb = new Bomb(callback, gameConfig.mapInfo, R.drawable.game_view_man, gameConfig.perWidth, gameConfig.perHeight);
-        bomber = new Bomber(bomb, gameConfig.mapInfo, R.drawable.game_view_man, gameConfig.perWidth, gameConfig.perHeight);
+        bombs = new ArrayList<>();
         emys = new ArrayList<>();
+        bomber = new Bomber(bombs);
         for (int i = 0; i < gameConfig.getEmyCount(); i++) {
-            emys.add(new EmyBall(R.drawable.game_view_ball, gameConfig.mapInfo, gameConfig.perWidth, gameConfig.perHeight));
+            bombs.add(new Bomb(callback));
+        }
+        for (int i = 0; i < gameConfig.getEmyCount(); i++) {
+            emys.add(new EmyBall());
         }
     }
 
@@ -234,7 +237,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Map
     }
 
     private void drawBomb(Canvas canvas) {
-        bomb.draw(canvas);
+        for (Bomb bomb : bombs) {
+            bomb.draw(canvas);
+        }
     }
 
 

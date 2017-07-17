@@ -1,7 +1,5 @@
 package com.unual.bomberman.bean;
 
-import android.util.Log;
-
 /**
  * Created by unual on 2017/7/7.
  */

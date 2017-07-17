@@ -16,17 +16,22 @@ import java.util.TimerTask;
  */
 
 public class Bomb extends BaseModel {
-    private int bombLength = 1;
+    private static final int BOMB_TIME = 3000;
+    private static final int BOOM_TIME = 1000;
+    private int bombLength = 2;
+    private boolean calcul;
     private boolean isPlaced;
     private boolean boom;
-    Bitmap horizon, vertical, center;
-    private byte[][] mapInfo;
     private BombCallback callback;
+    private Bitmap horizon, vertical, center;
+    private int upLength = 0;
+    private int leftLength = 0;
+    private int rightLength = 0;
+    private int downLength = 0;
 
-    public Bomb(BombCallback callback, byte[][] mapInfo, int resId, int perWidth, int perHeight) {
-        super(resId, perWidth, perHeight);
+    public Bomb(BombCallback callback) {
         this.callback = callback;
-        this.mapInfo = mapInfo;
+        location = new Location();
         icon = BitmapFactory.decodeResource(AppCache.getInstance().getContext().getResources(), R.drawable.game_view_bomb);
         icon = Bitmap.createScaledBitmap(icon, perWidth, perHeight, false);
         horizon = BitmapFactory.decodeResource(AppCache.getInstance().getContext().getResources(), R.drawable.game_view_bomb_horizon);
@@ -37,10 +42,6 @@ public class Bomb extends BaseModel {
         center = Bitmap.createScaledBitmap(center, perWidth, perHeight, false);
     }
 
-    @Override
-    public void initLocation(Location location) {
-
-    }
 
     public boolean isPlaced() {
         return isPlaced;
@@ -58,20 +59,22 @@ public class Bomb extends BaseModel {
         AppCache.getInstance().setDelayTask(new TimerTask() {
             @Override
             public void run() {
+                mapInfo[location.x][location.y] = MapView.GameConfig.TYPE_TEMP;
                 boom = true;
-                callback.onFireOn(location.x, location.y, bombLength);
-                Log.e("123", location.x + "," + location.y);
+                calcul = true;
+                callback.onFireOn(location.x, location.y, boomUpLength(), boomLeftLength(), boomRightLength(), boomDownLength());
+                calcul = false;
                 try {
-                    Thread.currentThread().sleep(1000);
+                    Thread.currentThread().sleep(BOOM_TIME);
                     boom = false;
                     isPlaced = false;
                     mapInfo[location.x][location.y] = MapView.GameConfig.TYPE_BACKGROUND;
-                    callback.onFireOff(location.x, location.y, bombLength);
+                    callback.onFireOff(location.x, location.y, boomUpLength(), boomLeftLength(), boomRightLength(), boomDownLength());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-        }, 3000);
+        }, BOMB_TIME);
     }
 
     @Override
@@ -79,70 +82,158 @@ public class Bomb extends BaseModel {
         if (isPlaced) {
             if (boom) {
                 canvas.drawBitmap(center, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
-                if (canLeft())
-                    canvas.drawBitmap(horizon, (location.x - 1 + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
-                if (canRight())
-                    canvas.drawBitmap(horizon, (location.x + 1 + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
-                if (canUp())
-                    canvas.drawBitmap(vertical, (location.x + location.xOffset) * perWidth, (location.y - 1 + location.yOffset) * perHeight, null);
-                if (canDown())
-                    canvas.drawBitmap(vertical, (location.x + location.xOffset) * perWidth, (location.y + 1 + location.yOffset) * perHeight, null);
+                if (upLength != 0) {
+                    for (int i = upLength; i > 0; i--) {
+                        canvas.drawBitmap(vertical, location.x * perWidth, (location.y - i) * perHeight, null);
+                    }
+                }
+                if (leftLength != 0) {
+                    for (int i = leftLength; i > 0; i--) {
+                        canvas.drawBitmap(horizon, (location.x - i) * perWidth, location.y * perHeight, null);
+                    }
+                }
+                if (rightLength != 0) {
+                    for (int i = rightLength; i > 0; i--) {
+                        canvas.drawBitmap(horizon, (location.x + i) * perWidth, location.y * perHeight, null);
+                    }
+                }
+                if (downLength != 0) {
+                    for (int i = downLength; i > 0; i--) {
+                        canvas.drawBitmap(vertical, location.x * perWidth, (location.y + i) * perHeight, null);
+                    }
+                }
             } else {
                 canvas.drawBitmap(icon, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
             }
         } else {
 
         }
-
     }
 
-    public boolean canUp() {
-        if (location.y < 1) {
+    @Override
+    public boolean canUp(int x, int y) {
+        if (y < 1) {
             return false;
         }
-        int mapInfo = this.mapInfo[location.x][location.y - 1];
-        if (mapInfo <= MapView.GameConfig.TYPE_WALL) {
+        if (mapInfo[x][y - 1] <= MapView.GameConfig.TYPE_WALL) {
             return true;
         }
         return false;
     }
 
-    public boolean canLeft() {
-        if (location.x < 1) {
+    @Override
+    public boolean canDown(int x, int y) {
+        if (y >= MapView.GameConfig.heightSize - 1) {
             return false;
         }
-        int mapInfo = this.mapInfo[location.x - 1][location.y];
-        if (mapInfo <= MapView.GameConfig.TYPE_WALL) {
+        if (mapInfo[x][y + 1] <= MapView.GameConfig.TYPE_WALL) {
             return true;
         }
         return false;
     }
 
-    public boolean canRight() {
-        if (location.x >= MapView.GameConfig.widthSize - 1) {
+    @Override
+    public boolean canLeft(int x, int y) {
+        if (x < 1) {
             return false;
         }
-        int mapInfo = this.mapInfo[location.x + 1][location.y];
-        if (mapInfo <= MapView.GameConfig.TYPE_WALL) {
+        if (mapInfo[x - 1][y] <= MapView.GameConfig.TYPE_WALL) {
             return true;
         }
         return false;
     }
 
-    public boolean canDown() {
-        if (location.y >= MapView.GameConfig.heightSize - 1) {
+    @Override
+    public boolean canRight(int x, int y) {
+        if (x >= MapView.GameConfig.widthSize - 1) {
             return false;
         }
-        int mapInfo = this.mapInfo[location.x][location.y + 1];
-        if (mapInfo <= MapView.GameConfig.TYPE_WALL) {
+        if (mapInfo[x + 1][y] <= MapView.GameConfig.TYPE_WALL) {
             return true;
         }
         return false;
+    }
+
+    public boolean isBackGround(int x, int y) {
+        if (x < 0 || y > MapView.GameConfig.widthSize - 1) {
+            return false;
+        }
+        if (mapInfo[x][y] == MapView.GameConfig.TYPE_BACKGROUND || mapInfo[x][y] == MapView.GameConfig.TYPE_TEMP) {
+            return true;
+        }
+        return false;
+    }
+
+
+    private int boomUpLength() {
+        if (calcul) {
+            int l = 0;
+            for (int i = 0; i < bombLength; i++) {
+                if (canUp(location.x, location.y - i)) {
+                    if (!isBackGround(location.x, location.y - i)) break;
+                    l = i + 1;
+                } else {
+                    break;
+                }
+            }
+            upLength = l;
+        }
+        return upLength;
+    }
+
+    private int boomDownLength() {
+        if (calcul) {
+            int l = 0;
+            for (int i = 0; i < bombLength; i++) {
+                if (canDown(location.x, location.y + i)) {
+                    if (!isBackGround(location.x, location.y + i)) break;
+                    l = i + 1;
+                } else {
+                    break;
+                }
+            }
+            downLength = l;
+        }
+        return downLength;
+
+    }
+
+    private int boomLeftLength() {
+        if (calcul) {
+            int l = 0;
+            for (int i = 0; i < bombLength; i++) {
+                if (canLeft(location.x - i, location.y)) {
+                    if (!isBackGround(location.x - i, location.y)) break;
+                    l = i + 1;
+                } else {
+                    break;
+                }
+            }
+            leftLength = l;
+        }
+        return leftLength;
+    }
+
+
+    private int boomRightLength() {
+        if (calcul) {
+            int l = 0;
+            for (int i = 0; i < bombLength; i++) {
+                if (canRight(location.x + i, location.y)) {
+                    if (!isBackGround(location.x + i, location.y)) break;
+                    l = i + 1;
+                } else {
+                    break;
+                }
+            }
+            rightLength = l;
+        }
+        return rightLength;
     }
 
     public interface BombCallback {
-        void onFireOn(int x, int y, int length);
+        void onFireOn(int x, int y, int upLength, int leftLength, int rightLength, int downLength);
 
-        void onFireOff(int x, int y, int length);
+        void onFireOff(int x, int y, int upLength, int leftLength, int rightLength, int downLength);
     }
 }

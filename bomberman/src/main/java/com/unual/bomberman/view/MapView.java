@@ -132,43 +132,34 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback, Bomb
     }
 
     @Override
-    public void onFireOn(int x, int y, int length) {
-        gameConfig.mapInfo[x][y] = GameConfig.TYPE_FIRE;
-        Log.e("123", "onFireOn0:(" + x + "," + y + ")" + gameConfig.mapInfo[x][y]);
-        if (x - length > 0 && gameConfig.mapInfo[x - length][y] != GameConfig.TYPE_BRICK) {
-            gameConfig.mapInfo[x - length][y] = GameConfig.TYPE_FIRE;
-            Log.e("123", "onFireOn1:(" + (x - length) + "," + y + ")" + gameConfig.mapInfo[x - length][y]);
+    public void onFireOn(int x, int y, int upLength, int leftLength, int rightLength, int downLength) {
+        for (int i = 0; i <= upLength; i++) {
+            gameConfig.mapInfo[x][y - i] = GameConfig.TYPE_FIRE;
         }
-        if (x + length < GameConfig.widthSize - 1 && gameConfig.mapInfo[x + length][y] != GameConfig.TYPE_BRICK) {
-            gameConfig.mapInfo[x + length][y] = GameConfig.TYPE_FIRE;
-            Log.e("123", "onFireOn2:(" + (x + length) + "," + y + ")" + gameConfig.mapInfo[x + length][y]);
+        for (int i = 0; i <= leftLength; i++) {
+            gameConfig.mapInfo[x - i][y] = GameConfig.TYPE_FIRE;
         }
-        if (y - length > 0 && gameConfig.mapInfo[x][y - length] != GameConfig.TYPE_BRICK) {
-            gameConfig.mapInfo[x][y - length] = GameConfig.TYPE_FIRE;
-            Log.e("123", "onFireOn3:(" + x + "," + (y - length) + ")" + gameConfig.mapInfo[x][y - length]);
+        for (int i = 0; i <= rightLength; i++) {
+            gameConfig.mapInfo[x + i][y] = GameConfig.TYPE_FIRE;
         }
-        if (y + length < GameConfig.heightSize - 1 && gameConfig.mapInfo[x][y + length] != GameConfig.TYPE_BRICK) {
-            gameConfig.mapInfo[x][y + length] = GameConfig.TYPE_FIRE;
-            Log.e("123", "onFireOn4:(" + x + "," + (y + length) + ")" + gameConfig.mapInfo[x][y + length]);
+        for (int i = 0; i <= downLength; i++) {
+            gameConfig.mapInfo[x][y + i] = GameConfig.TYPE_FIRE;
         }
-        renderMap();
     }
 
     @Override
-    public void onFireOff(int x, int y, int length) {
-        Log.e("123", "onFireOFF");
-        gameConfig.mapInfo[x][y] = GameConfig.TYPE_BACKGROUND;
-        if (x - length > 0 && gameConfig.mapInfo[x - length][y] == GameConfig.TYPE_FIRE) {
-            gameConfig.mapInfo[x - length][y] = GameConfig.TYPE_BACKGROUND;
+    public void onFireOff(int x, int y, int upLength, int leftLength, int rightLength, int downLength) {
+        for (int i = 0; i <= upLength; i++) {
+            gameConfig.mapInfo[x][y - i] = GameConfig.TYPE_BACKGROUND;
         }
-        if (x + length < GameConfig.widthSize - 1 && gameConfig.mapInfo[x + length][y] == GameConfig.TYPE_FIRE) {
-            gameConfig.mapInfo[x + length][y] = GameConfig.TYPE_BACKGROUND;
+        for (int i = 0; i <= leftLength; i++) {
+            gameConfig.mapInfo[x - i][y] = GameConfig.TYPE_BACKGROUND;
         }
-        if (y - length > 0 && gameConfig.mapInfo[x][y - length] == GameConfig.TYPE_FIRE) {
-            gameConfig.mapInfo[x][y - length] = GameConfig.TYPE_BACKGROUND;
+        for (int i = 0; i <= rightLength; i++) {
+            gameConfig.mapInfo[x + i][y] = GameConfig.TYPE_BACKGROUND;
         }
-        if (y + length < GameConfig.heightSize - 1 && gameConfig.mapInfo[x][y + length] == GameConfig.TYPE_FIRE) {
-            gameConfig.mapInfo[x][y + length] = GameConfig.TYPE_BACKGROUND;
+        for (int i = 0; i <= downLength; i++) {
+            gameConfig.mapInfo[x][y + i] = GameConfig.TYPE_BACKGROUND;
         }
         renderMap();
     }
@@ -194,17 +185,18 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback, Bomb
         Bitmap wall;
         int mapLevel;
         int emyCount;
+        int bombCount;
 
         public GameConfig() {
             this.percent = 5;
             this.mapLevel = 1;
+            this.bombCount = 1;
             this.emyCount = 6;
         }
 
         public int getEmyCount() {
             return emyCount;
         }
-
 
         public int getWidthSize() {
             return widthSize;
@@ -220,14 +212,6 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback, Bomb
 
         public int getMapHeight() {
             return mapHeight;
-        }
-
-        public int getPerWidth() {
-            return perWidth;
-        }
-
-        public int getPerHeight() {
-            return perHeight;
         }
 
         public void clean() {
