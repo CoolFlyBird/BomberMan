@@ -11,13 +11,13 @@ import com.unual.bomberman.view.MapView;
  * Created by unual on 2017/7/14.
  */
 
-public abstract class MoveModel extends Model implements IDirection {
-    protected static int[] LEVEL = {15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5};
+public abstract class MoveModel extends BaseModel implements IDirection {
+    protected static int[] LEVEL = {15, 14, 13, 12, 11, 10};
     protected int nextDirection;
     protected float speed_value;
     protected byte[][] mapInfos;
     protected boolean death;
-    private Speed speed;
+    Speed speed;
 
     public MoveModel(int resId, byte[][] mapInfo, int perWidth, int perHeight) {
         super(resId, perWidth, perHeight);
@@ -39,29 +39,28 @@ public abstract class MoveModel extends Model implements IDirection {
         location.update();
     }
 
-    private void checkDeath() {
+    public void checkDeath() {
         if (mapInfos[location.x][location.y] == MapView.GameConfig.TYPE_FIRE) {
             death = true;
         } else {
-            if (location.yOffset > -0.2 && location.y > 0 && mapInfos[location.x][location.y - 1] == MapView.GameConfig.TYPE_FIRE) {
+            if (location.yOffset < -0.5 && location.y > 0 && mapInfos[location.x][location.y - 1] == MapView.GameConfig.TYPE_FIRE) {
                 death = true;
             }
-            if (location.yOffset > 0.2 && location.y < MapView.GameConfig.heightSize - 2 && mapInfos[location.x][location.y + 1] == MapView.GameConfig.TYPE_FIRE) {
+            if (location.yOffset > 0.5 && location.y < MapView.GameConfig.heightSize - 2 && mapInfos[location.x][location.y + 1] == MapView.GameConfig.TYPE_FIRE) {
                 death = true;
             }
-            if (location.xOffset > -0.2 && location.x > 0 && mapInfos[location.x - 1][location.y] == MapView.GameConfig.TYPE_FIRE) {
+            if (location.xOffset < -0.5 && location.x > 0 && mapInfos[location.x - 1][location.y] == MapView.GameConfig.TYPE_FIRE) {
                 death = true;
             }
-            if (location.xOffset > 0.2 && location.x < MapView.GameConfig.widthSize - 2 && mapInfos[location.x + 1][location.y] == MapView.GameConfig.TYPE_FIRE) {
+            if (location.xOffset > 0.5 && location.x < MapView.GameConfig.widthSize - 2 && mapInfos[location.x + 1][location.y] == MapView.GameConfig.TYPE_FIRE) {
                 death = true;
             }
         }
-
     }
 
-    private void changeDirectionCheck() {
+    public void changeDirectionCheck() {
         if (onXYLine()) {
-            if (location.x % 2 != 0 && location.x % 2 != 0) {
+            if (location.x % 2 != 0 && location.y % 2 != 0) {
                 onCrossRoad();
             }
             onPoint();
@@ -71,7 +70,6 @@ public abstract class MoveModel extends Model implements IDirection {
                         speed.xSpeed = 0;
                         speed.ySpeed = -speed_value;
                     } else {
-                        nextDirection = IControl.DIRECTION_NONE;
                         speed.xSpeed = 0;
                         speed.ySpeed = 0;
                         onDirectionError();
@@ -82,7 +80,6 @@ public abstract class MoveModel extends Model implements IDirection {
                         speed.xSpeed = 0;
                         speed.ySpeed = speed_value;
                     } else {
-                        nextDirection = IControl.DIRECTION_NONE;
                         speed.xSpeed = 0;
                         speed.ySpeed = 0;
                         onDirectionError();
@@ -93,7 +90,6 @@ public abstract class MoveModel extends Model implements IDirection {
                         speed.xSpeed = -speed_value;
                         speed.ySpeed = 0;
                     } else {
-                        nextDirection = IControl.DIRECTION_NONE;
                         speed.xSpeed = 0;
                         speed.ySpeed = 0;
                         onDirectionError();
@@ -104,7 +100,6 @@ public abstract class MoveModel extends Model implements IDirection {
                         speed.xSpeed = speed_value;
                         speed.ySpeed = 0;
                     } else {
-                        nextDirection = IControl.DIRECTION_NONE;
                         speed.xSpeed = 0;
                         speed.ySpeed = 0;
                         onDirectionError();
@@ -118,21 +113,21 @@ public abstract class MoveModel extends Model implements IDirection {
         }
     }
 
-    private boolean onXLine() {
+    boolean onXLine() {
         if ((Math.abs(location.yOffset) <= 10e-6)) {
             return true;
         }
         return false;
     }
 
-    private boolean onYLine() {
+    boolean onYLine() {
         if ((Math.abs(location.xOffset) <= 10e-6)) {
             return true;
         }
         return false;
     }
 
-    private boolean onXYLine() {
+    boolean onXYLine() {
         if ((Math.abs(location.xOffset) <= 10e-6) && (Math.abs(location.yOffset) <= 10e-6)) {
             return true;
         }

@@ -133,41 +133,40 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback, Bomb
 
     @Override
     public void onFireOn(int x, int y, int length) {
-        gameConfig.mapInfo[x][y] = GameConfig.TYPE_BACKGROUND;
-        if (x - length > 0 && gameConfig.mapInfo[x - length][y] == GameConfig.TYPE_WALL) {
+        gameConfig.mapInfo[x][y] = GameConfig.TYPE_FIRE;
+        Log.e("123", "onFireOn0:(" + x + "," + y + ")" + gameConfig.mapInfo[x][y]);
+        if (x - length > 0 && gameConfig.mapInfo[x - length][y] != GameConfig.TYPE_BRICK) {
             gameConfig.mapInfo[x - length][y] = GameConfig.TYPE_FIRE;
+            Log.e("123", "onFireOn1:(" + (x - length) + "," + y + ")" + gameConfig.mapInfo[x - length][y]);
         }
-
-        if (x + length < GameConfig.widthSize - 1 && gameConfig.mapInfo[x + length][y] == GameConfig.TYPE_WALL) {
+        if (x + length < GameConfig.widthSize - 1 && gameConfig.mapInfo[x + length][y] != GameConfig.TYPE_BRICK) {
             gameConfig.mapInfo[x + length][y] = GameConfig.TYPE_FIRE;
+            Log.e("123", "onFireOn2:(" + (x + length) + "," + y + ")" + gameConfig.mapInfo[x + length][y]);
         }
-
-        if (y - length > 0 && gameConfig.mapInfo[x][y - length] == GameConfig.TYPE_WALL) {
+        if (y - length > 0 && gameConfig.mapInfo[x][y - length] != GameConfig.TYPE_BRICK) {
             gameConfig.mapInfo[x][y - length] = GameConfig.TYPE_FIRE;
+            Log.e("123", "onFireOn3:(" + x + "," + (y - length) + ")" + gameConfig.mapInfo[x][y - length]);
         }
-
-        if (y + length < GameConfig.heightSize - 1 && gameConfig.mapInfo[x][y + length] == GameConfig.TYPE_WALL) {
+        if (y + length < GameConfig.heightSize - 1 && gameConfig.mapInfo[x][y + length] != GameConfig.TYPE_BRICK) {
             gameConfig.mapInfo[x][y + length] = GameConfig.TYPE_FIRE;
+            Log.e("123", "onFireOn4:(" + x + "," + (y + length) + ")" + gameConfig.mapInfo[x][y + length]);
         }
         renderMap();
     }
 
     @Override
     public void onFireOff(int x, int y, int length) {
+        Log.e("123", "onFireOFF");
         gameConfig.mapInfo[x][y] = GameConfig.TYPE_BACKGROUND;
         if (x - length > 0 && gameConfig.mapInfo[x - length][y] == GameConfig.TYPE_FIRE) {
             gameConfig.mapInfo[x - length][y] = GameConfig.TYPE_BACKGROUND;
         }
-
-
         if (x + length < GameConfig.widthSize - 1 && gameConfig.mapInfo[x + length][y] == GameConfig.TYPE_FIRE) {
             gameConfig.mapInfo[x + length][y] = GameConfig.TYPE_BACKGROUND;
         }
-
         if (y - length > 0 && gameConfig.mapInfo[x][y - length] == GameConfig.TYPE_FIRE) {
             gameConfig.mapInfo[x][y - length] = GameConfig.TYPE_BACKGROUND;
         }
-
         if (y + length < GameConfig.heightSize - 1 && gameConfig.mapInfo[x][y + length] == GameConfig.TYPE_FIRE) {
             gameConfig.mapInfo[x][y + length] = GameConfig.TYPE_BACKGROUND;
         }
@@ -176,7 +175,7 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback, Bomb
 
 
     public static class GameConfig {
-        public Random random = new Random(47);
+        public Random random = new Random();
         public static final byte TYPE_BACKGROUND = 0;
         public static final byte TYPE_TEMP = 1;
         public static final byte TYPE_PROPS = 2;
@@ -185,10 +184,10 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback, Bomb
         public static final byte TYPE_BRICK = 5;
         public static int widthSize = 21;
         public static int heightSize = 13;
-        public static int mapFps = 30;
+        public static int mapFps = 20;
+        public static int perWidth, perHeight;
+        public static byte[][] mapInfo;
         int mapWidth, mapHeight;
-        int perWidth, perHeight;
-        byte[][] mapInfo;
         int percent;
         Bitmap background;
         Bitmap brick;
@@ -197,7 +196,7 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback, Bomb
         int emyCount;
 
         public GameConfig() {
-            this.percent = 3;
+            this.percent = 5;
             this.mapLevel = 1;
             this.emyCount = 6;
         }

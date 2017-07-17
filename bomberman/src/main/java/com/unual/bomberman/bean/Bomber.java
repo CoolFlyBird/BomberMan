@@ -93,7 +93,6 @@ public class Bomber extends MoveModel implements IControl {
         if (mapInfo == MapView.GameConfig.TYPE_BACKGROUND) {
             return true;
         }
-        Log.e("123", "type:" + mapInfo);
         return false;
     }
 

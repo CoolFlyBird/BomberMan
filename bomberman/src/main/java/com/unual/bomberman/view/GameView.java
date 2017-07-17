@@ -14,7 +14,7 @@ import android.view.SurfaceView;
 import com.unual.bomberman.R;
 import com.unual.bomberman.bean.Bomb;
 import com.unual.bomberman.bean.Bomber;
-import com.unual.bomberman.bean.EmyBalloon;
+import com.unual.bomberman.bean.EmyBall;
 import com.unual.bomberman.bean.MoveModel;
 import com.unual.bomberman.interfaces.IControl;
 
@@ -179,7 +179,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Map
         bomber = new Bomber(bomb, gameConfig.mapInfo, R.drawable.game_view_man, gameConfig.perWidth, gameConfig.perHeight);
         emys = new ArrayList<>();
         for (int i = 0; i < gameConfig.getEmyCount(); i++) {
-            emys.add(new EmyBalloon(R.drawable.game_view_ball, gameConfig.mapInfo, gameConfig.perWidth, gameConfig.perHeight));
+            emys.add(new EmyBall(R.drawable.game_view_ball, gameConfig.mapInfo, gameConfig.perWidth, gameConfig.perHeight));
         }
     }
 

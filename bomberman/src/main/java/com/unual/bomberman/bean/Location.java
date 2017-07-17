@@ -9,8 +9,8 @@ import android.util.Log;
 public class Location {
     int x;
     int y;
-    public float xOffset;
-    public float yOffset;
+    float xOffset;
+    float yOffset;
 
     public void update() {
         if (xOffset > 0) {

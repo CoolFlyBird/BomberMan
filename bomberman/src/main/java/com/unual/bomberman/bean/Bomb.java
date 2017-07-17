@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.unual.bomberman.AppCache;
 import com.unual.bomberman.R;
-import com.unual.bomberman.interfaces.IDirection;
 import com.unual.bomberman.view.MapView;
 
 import java.util.TimerTask;
@@ -16,7 +15,7 @@ import java.util.TimerTask;
  * Created by unual on 2017/7/14.
  */
 
-public class Bomb extends Model {
+public class Bomb extends BaseModel {
     private int bombLength = 1;
     private boolean isPlaced;
     private boolean boom;

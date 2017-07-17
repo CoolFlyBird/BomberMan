@@ -1,19 +1,22 @@
 package com.unual.bomberman.bean;
 
 import android.graphics.Canvas;
+import android.util.Log;
 
 import com.unual.bomberman.AppCache;
+import com.unual.bomberman.interfaces.IControl;
 import com.unual.bomberman.view.MapView;
 
 /**
  * Created by unual on 2017/7/12.
  */
 
-public class EmyBalloon extends MoveModel {
+public class EmyBall extends MoveModel {
     private static final int PERCENT = 4;
     private int walkOverCrossRoadCount = 0;
+    private int waitError = 0;
 
-    public EmyBalloon(int resId, byte[][] mapInfo, int perWidth, int perHeight) {
+    public EmyBall(int resId, byte[][] mapInfo, int perWidth, int perHeight) {
         super(resId, mapInfo, perWidth, perHeight);
         speed_value = (float) (1.0 / LEVEL[0]);
     }
@@ -36,16 +39,18 @@ public class EmyBalloon extends MoveModel {
 
     @Override
     public void onPoint() {
-
     }
 
     public void onDirectionError() {
-        setRandomDirection();
+        waitError++;
+        if (waitError == MapView.GameConfig.mapFps / 3) {
+            waitError = 0;
+            setRandomDirection();
+        }
     }
 
     private void setRandomDirection() {
         nextDirection = AppCache.getInstance().getGameConfig().random.nextInt(4) + 1;
-        walkOverCrossRoadCount = AppCache.getInstance().getGameConfig().random.nextInt(PERCENT);
     }
 
     @Override
