@@ -178,7 +178,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Map
         bombs = new ArrayList<>();
         emys = new ArrayList<>();
         bomber = new Bomber(bombs);
-        for (int i = 0; i < gameConfig.getEmyCount(); i++) {
+        for (int i = 0; i < gameConfig.getBombCount(); i++) {
             bombs.add(new Bomb(callback));
         }
         for (int i = 0; i < gameConfig.getEmyCount(); i++) {

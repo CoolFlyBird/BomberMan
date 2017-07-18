@@ -175,7 +175,7 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback, Bomb
         public static final byte TYPE_BRICK = 5;
         public static int widthSize = 21;
         public static int heightSize = 13;
-        public static int mapFps = 20;
+        public static int mapFps = 30;
         public static int perWidth, perHeight;
         public static byte[][] mapInfo;
         int mapWidth, mapHeight;
@@ -190,12 +190,16 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback, Bomb
         public GameConfig() {
             this.percent = 5;
             this.mapLevel = 1;
-            this.bombCount = 1;
+            this.bombCount = 3;
             this.emyCount = 6;
         }
 
         public int getEmyCount() {
             return emyCount;
+        }
+
+        public int getBombCount() {
+            return bombCount;
         }
 
         public int getWidthSize() {

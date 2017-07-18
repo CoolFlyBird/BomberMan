@@ -2,10 +2,12 @@ package com.unual.bomberman.bean;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import com.unual.bomberman.AppCache;
 import com.unual.bomberman.R;
 import com.unual.bomberman.interfaces.IControl;
+import com.unual.bomberman.view.MapView;
 
 import java.util.List;
 
@@ -40,7 +42,7 @@ public class Bomber extends MoveModel implements IControl {
 
     @Override
     public void onPoint() {
-        if (nextBomb) {
+        if (nextBomb && (mapInfo[location.x][location.y] != MapView.GameConfig.TYPE_TEMP)) {
             for (Bomb bomb : bombs) {
                 if (!bomb.isPlaced()) {
                     bomb.setLocation(location.x, location.y);
@@ -62,7 +64,7 @@ public class Bomber extends MoveModel implements IControl {
         int j = 0;
         for (Bomb bomb : bombs)
             if (bomb.isPlaced()) j++;
-        if (j == bombs.size())
+        if (j < bombs.size())
             nextBomb = true;
         else {
 

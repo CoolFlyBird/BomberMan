@@ -1,3 +1,4 @@
+
 package com.unual.bomberman.bean;
 
 import android.graphics.Bitmap;
