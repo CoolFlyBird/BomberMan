@@ -2,7 +2,6 @@ package com.unual.bomberman.bean;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
 import com.unual.bomberman.AppCache;
 import com.unual.bomberman.R;
@@ -50,7 +49,6 @@ public class Bomber extends MoveModel implements IControl {
                     break;
                 }
             }
-
         }
     }
 
@@ -79,5 +77,17 @@ public class Bomber extends MoveModel implements IControl {
     @Override
     public void setSpeed(int level) {
         speed_value = (float) (1.0 / LEVEL[level]);
+    }
+
+    @Override
+    public boolean meetWith(BaseModel model) {
+        if (location.x == model.location.x && location.y == model.location.y) {
+            return true;
+        } else if (location.x == model.location.x) {
+
+        } else if (location.y == model.location.y) {
+
+        }
+        return false;
     }
 }

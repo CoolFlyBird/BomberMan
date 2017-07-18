@@ -105,6 +105,7 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback, Bomb
                     case GameConfig.TYPE_PROPS:
                         canvas.drawBitmap(gameConfig.wall, x * gameConfig.perWidth, y * gameConfig.perHeight, null);
                         break;
+                    case GameConfig.TYPE_TEMP:
                     case GameConfig.TYPE_FIRE:
                     case GameConfig.TYPE_BACKGROUND:
                         canvas.drawBitmap(gameConfig.background, x * gameConfig.perWidth, y * gameConfig.perHeight, null);

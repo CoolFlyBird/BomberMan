@@ -5,10 +5,10 @@ package com.unual.bomberman.bean;
  */
 
 public class Location {
-    int x;
-    int y;
     float xOffset;
     float yOffset;
+    int x;
+    int y;
 
     public void update() {
         if (xOffset > 0) {

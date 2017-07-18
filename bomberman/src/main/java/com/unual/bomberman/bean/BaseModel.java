@@ -24,6 +24,8 @@ public abstract class BaseModel {
 
     public abstract boolean canRight(int x, int y);
 
+    public abstract boolean meetWith(BaseModel model);
+
     public abstract void draw(Canvas canvas);
 
 }

@@ -74,7 +74,7 @@ public abstract class MoveModel extends BaseModel {
         location.update();
     }
 
-    public void checkDeath() {
+    public boolean checkDeath() {
         if (mapInfo[location.x][location.y] == MapView.GameConfig.TYPE_FIRE) {
             death = true;
         } else {
@@ -91,6 +91,7 @@ public abstract class MoveModel extends BaseModel {
                 death = true;
             }
         }
+        return death;
     }
 
     public void changeDirectionCheck() {
@@ -170,7 +171,7 @@ public abstract class MoveModel extends BaseModel {
     }
 
     public void draw(Canvas canvas) {
-        checkDeath();
+        if(checkDeath())return;
         changeDirectionCheck();
         updateLocation();
         if (!death)
