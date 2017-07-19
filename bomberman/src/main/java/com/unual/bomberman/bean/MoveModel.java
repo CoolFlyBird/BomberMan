@@ -14,12 +14,13 @@ import com.unual.bomberman.view.MapView;
  */
 
 public abstract class MoveModel extends BaseModel {
-    protected static int[] LEVEL = {15, 14, 13, 12, 11, 10};
+    protected static int[] LEVEL = {22, 18, 15, 13, 11, 10, 9};
     protected int nextDirection;
     protected float speed_value;
     protected boolean death;
     protected int died_value;
     protected Speed speed;
+    protected int level;
     private boolean removed;
     private Bitmap icon_x;
     private Bitmap icon_xx;
@@ -32,6 +33,8 @@ public abstract class MoveModel extends BaseModel {
     public abstract void onCrossRoad();
 
     public abstract void onDirectionError();
+
+    public abstract boolean meetWith(BaseModel model);
 
     public boolean isRemoved() {
         return removed;
@@ -55,45 +58,41 @@ public abstract class MoveModel extends BaseModel {
         }
     }
 
-    @Override
     public boolean canUp(int x, int y) {
         if (y < 1) {
             return false;
         }
-        if (mapInfo[x][y - 1] == MapView.GameConfig.TYPE_BACKGROUND) {
+        if (mapInfo[x][y - 1] == MapView.GameConfig.TYPE_BACKGROUND || mapInfo[x][y - 1] == MapView.GameConfig.TYPE_FIRE) {
             return true;
         }
         return false;
     }
 
-    @Override
     public boolean canLeft(int x, int y) {
         if (x < 1) {
             return false;
         }
-        if (mapInfo[x - 1][y] == MapView.GameConfig.TYPE_BACKGROUND) {
+        if (mapInfo[x - 1][y] == MapView.GameConfig.TYPE_BACKGROUND || mapInfo[x - 1][y] == MapView.GameConfig.TYPE_FIRE) {
             return true;
         }
         return false;
     }
 
-    @Override
     public boolean canRight(int x, int y) {
         if (x >= MapView.GameConfig.widthSize - 1) {
             return false;
         }
-        if (mapInfo[x + 1][y] == MapView.GameConfig.TYPE_BACKGROUND) {
+        if (mapInfo[x + 1][y] == MapView.GameConfig.TYPE_BACKGROUND || mapInfo[x + 1][y] == MapView.GameConfig.TYPE_FIRE) {
             return true;
         }
         return false;
     }
 
-    @Override
     public boolean canDown(int x, int y) {
         if (y >= MapView.GameConfig.heightSize - 1) {
             return false;
         }
-        if (mapInfo[x][y + 1] == MapView.GameConfig.TYPE_BACKGROUND) {
+        if (mapInfo[x][y + 1] == MapView.GameConfig.TYPE_BACKGROUND || mapInfo[x][y + 1] == MapView.GameConfig.TYPE_FIRE) {
             return true;
         }
         return false;
@@ -206,13 +205,13 @@ public abstract class MoveModel extends BaseModel {
         changeDirectionCheck();
         updateLocation();
         canvas.drawBitmap(icon, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
-        if (died_value >= MapView.GameConfig.mapFps / 3 && died_value <= MapView.GameConfig.mapFps * 2 / 3) {
+        if (died_value >= MapView.GameConfig.mapFps * 2 / 3 && died_value <= MapView.GameConfig.mapFps * 2 * 2 / 3) {
             canvas.drawBitmap(icon_x, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
-        } else if (died_value >= MapView.GameConfig.mapFps * 2 / 3 && died_value <= MapView.GameConfig.mapFps) {
+        } else if (died_value >= MapView.GameConfig.mapFps * 2 * 2 / 3 && died_value <= MapView.GameConfig.mapFps * 2) {
             canvas.drawBitmap(icon_xx, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
-        } else if (died_value >= MapView.GameConfig.mapFps && died_value <= MapView.GameConfig.mapFps * 4 / 3) {
+        } else if (died_value >= MapView.GameConfig.mapFps * 2 && died_value <= MapView.GameConfig.mapFps * 2 * 4 / 3) {
             canvas.drawBitmap(icon_xxx, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
-        } else if (died_value >= MapView.GameConfig.mapFps * 4 / 3) {
+        } else if (died_value >= MapView.GameConfig.mapFps * 2 * 4 / 3) {
             canvas.drawBitmap(icon_xxx, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
             removed = true;
         }

@@ -18,7 +18,7 @@ import java.util.TimerTask;
 public class Bomb extends BaseModel {
     private static final int BOMB_TIME = 3000;
     private static final int BOOM_TIME = 1000;
-    private int bombLength = 2;
+    private static int bombLength = 1;
     private boolean calcul;
     private boolean isPlaced;
     private boolean boom;
@@ -42,6 +42,9 @@ public class Bomb extends BaseModel {
         center = Bitmap.createScaledBitmap(center, perWidth, perHeight, false);
     }
 
+    public static void increaseLength() {
+        bombLength++;
+    }
 
     public boolean isPlaced() {
         return isPlaced;
@@ -110,7 +113,6 @@ public class Bomb extends BaseModel {
         }
     }
 
-    @Override
     public boolean canUp(int x, int y) {
         if (y < 1) {
             return false;
@@ -121,7 +123,6 @@ public class Bomb extends BaseModel {
         return false;
     }
 
-    @Override
     public boolean canDown(int x, int y) {
         if (y >= MapView.GameConfig.heightSize - 1) {
             return false;
@@ -132,7 +133,6 @@ public class Bomb extends BaseModel {
         return false;
     }
 
-    @Override
     public boolean canLeft(int x, int y) {
         if (x < 1) {
             return false;
@@ -143,7 +143,6 @@ public class Bomb extends BaseModel {
         return false;
     }
 
-    @Override
     public boolean canRight(int x, int y) {
         if (x >= MapView.GameConfig.widthSize - 1) {
             return false;
@@ -151,11 +150,6 @@ public class Bomb extends BaseModel {
         if (mapInfo[x + 1][y] <= MapView.GameConfig.TYPE_WALL) {
             return true;
         }
-        return false;
-    }
-
-    @Override
-    public boolean meetWith(BaseModel model) {
         return false;
     }
 

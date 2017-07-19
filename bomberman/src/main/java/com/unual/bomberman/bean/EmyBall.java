@@ -21,7 +21,7 @@ public class EmyBall extends MoveModel {
     public EmyBall() {
         location = new Location();
         speed = new Speed();
-        speed_value = (float) (1.0 / LEVEL[0]);
+        speed_value = (float) (1.0 / LEVEL[level]);
         icon = BitmapFactory.decodeResource(AppCache.getInstance().getContext().getResources(), R.drawable.game_view_ball);
         icon = Bitmap.createScaledBitmap(icon, perWidth, perHeight, false);
         initLocation();
@@ -31,9 +31,13 @@ public class EmyBall extends MoveModel {
     public void initLocation() {
         int x = AppCache.getInstance().getGameConfig().random.nextInt(AppCache.getInstance().getGameConfig().getWidthSize() - 2) + 1;
         int y = AppCache.getInstance().getGameConfig().random.nextInt(AppCache.getInstance().getGameConfig().getHeightSize() - 2) + 1;
-        location.x = x;
-        location.y = y;
-        setRandomDirection();
+        if (mapInfo[x][y] != MapView.GameConfig.TYPE_BACKGROUND) {
+            initLocation();
+        } else {
+            location.x = x;
+            location.y = y;
+            setRandomDirection();
+        }
     }
 
     @Override

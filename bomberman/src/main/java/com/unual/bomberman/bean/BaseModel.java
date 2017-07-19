@@ -2,6 +2,7 @@ package com.unual.bomberman.bean;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.util.Log;
 
 import com.unual.bomberman.view.MapView;
 
@@ -10,21 +11,11 @@ import com.unual.bomberman.view.MapView;
  */
 
 public abstract class BaseModel {
-    protected static byte[][] mapInfo = MapView.GameConfig.mapInfo;
-    protected static int perHeight = MapView.GameConfig.perHeight;
-    protected static int perWidth = MapView.GameConfig.perWidth;
+    protected byte[][] mapInfo = MapView.GameConfig.mapInfo.getInfo();
+    protected int perHeight = MapView.GameConfig.perHeight;
+    protected int perWidth = MapView.GameConfig.perWidth;
     protected Location location;
     protected Bitmap icon;
-
-    public abstract boolean canUp(int x, int y);
-
-    public abstract boolean canDown(int x, int y);
-
-    public abstract boolean canLeft(int x, int y);
-
-    public abstract boolean canRight(int x, int y);
-
-    public abstract boolean meetWith(BaseModel model);
 
     public abstract void draw(Canvas canvas);
 

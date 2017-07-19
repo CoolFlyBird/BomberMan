@@ -17,21 +17,47 @@ import java.util.List;
 public class Bomber extends MoveModel implements IControl {
     private boolean nextBomb;
     private List<Bomb> bombs;
+    protected boolean skip;
+    protected boolean skipPass;
+
 
     public Bomber(List<Bomb> bombs) {
         this.bombs = bombs;
         location = new Location();
         speed = new Speed();
-        speed_value = (float) (1.0 / LEVEL[0]);
+        level = 2;
+        speed_value = (float) (1.0 / LEVEL[level]);
         icon = BitmapFactory.decodeResource(AppCache.getInstance().getContext().getResources(), R.drawable.game_view_man);
         icon = Bitmap.createScaledBitmap(icon, perWidth, perHeight, false);
         initLocation();
+    }
+
+    public boolean isSkip() {
+        return skip;
+    }
+
+    public void setSkip(boolean skip) {
+        this.skip = skip;
+    }
+
+    public boolean isSkipPass() {
+        return skipPass;
+    }
+
+    public void setSkipPass(boolean skipPass) {
+        this.skipPass = skipPass;
     }
 
     @Override
     public void initLocation() {
         location.x = 1;
         location.y = 1;
+    }
+
+    public void increaseSpeed() {
+        level++;
+        if (level < LEVEL.length)
+            speed_value = (float) (1.0 / LEVEL[level]);
     }
 
     @Override
@@ -75,15 +101,7 @@ public class Bomber extends MoveModel implements IControl {
     }
 
     @Override
-    public void setSpeed(int level) {
-        speed_value = (float) (1.0 / LEVEL[level]);
-    }
-
-    @Override
     public boolean meetWith(BaseModel model) {
-        if (model instanceof MoveModel) {
-            return location.meetWith(model.location);
-        }
-        return false;
+        return location.meetWith(model.location);
     }
 }

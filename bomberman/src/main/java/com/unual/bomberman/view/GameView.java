@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
 import com.unual.bomberman.R;
 import com.unual.bomberman.bean.Bomb;
@@ -18,6 +19,9 @@ import com.unual.bomberman.bean.Bomber;
 import com.unual.bomberman.bean.EmyBall;
 import com.unual.bomberman.bean.Location;
 import com.unual.bomberman.bean.MoveModel;
+import com.unual.bomberman.bean.PropBomb;
+import com.unual.bomberman.bean.PropDoor;
+import com.unual.bomberman.bean.PropModel;
 import com.unual.bomberman.interfaces.IControl;
 
 import java.util.ArrayList;
@@ -41,7 +45,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Map
     private Bomber bomber;
     private List<MoveModel> emys;
     private List<Bomb> bombs;
+    private PropModel propDoor;
+    private PropModel propBomb;
     List<MoveModel> remove = new ArrayList<>();
+
 
     public GameView(Context context) {
         super(context);
@@ -179,6 +186,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Map
         bombs = new ArrayList<>();
         emys = new ArrayList<>();
         bomber = new Bomber(bombs);
+        propDoor = gameConfig.getPropDoor();
+        propBomb = gameConfig.getPropBomb();
         for (int i = 0; i < gameConfig.getBombCount(); i++) {
             bombs.add(new Bomb(callback));
         }
@@ -195,7 +204,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Map
                     try {
                         if (onPause) break;
                         long startTime = System.currentTimeMillis();
-                        render();
+                        if (bombs != null)
+                            render();
                         long renderTime = System.currentTimeMillis() - startTime;
                         if (renderTime < timePerFrame)
                             Thread.currentThread().sleep(timePerFrame - renderTime);
@@ -213,14 +223,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Map
         canvas.drawColor(Color.WHITE);
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.SRC);
         drawBomb(canvas);
+        propBomb.draw(canvas);
+        propDoor.draw(canvas);
         drawMan(canvas);
         drawEnemy(canvas);
-        for (MoveModel emy : emys) {
-            if (bomber.meetWith(emy)) {
-                bomber.die();
-            } else {
-            }
-        }
         drawButton(canvas);
         mHolder.unlockCanvasAndPost(canvas);
     }
@@ -234,8 +240,32 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Map
 
 
     private void drawMan(Canvas canvas) {
-        if (bomber.isRemoved()) return;
-        bomber.draw(canvas);
+        if (bomber.isSkip()) return;
+        if (bomber.isRemoved()) {
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getContext(), "游戏结束", Toast.LENGTH_SHORT).show();
+                }
+            });
+            bomber.setSkip(true);
+        } else {
+            bomber.draw(canvas);
+        }
+        if (propBomb.isShow() && bomber.meetWith(propBomb)) {
+            Bomb.increaseLength();
+            propBomb.setEat(true);
+        }
+        if (bomber.isSkipPass()) return;
+        if (propDoor.isShow() && emys.size() == 0 && bomber.meetWith(propDoor)) {
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getContext(), "恭喜过关", Toast.LENGTH_SHORT).show();
+                }
+            });
+            bomber.setSkipPass(true);
+        }
     }
 
     private void drawEnemy(Canvas canvas) {
@@ -249,6 +279,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Map
         if (remove.size() != 0) {
             emys.removeAll(remove);
             remove.clear();
+        }
+        for (MoveModel emy : emys) {
+            if (bomber.meetWith(emy)) {
+                bomber.die();
+            } else {
+            }
         }
     }
 

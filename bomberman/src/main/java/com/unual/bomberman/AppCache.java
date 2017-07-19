@@ -18,7 +18,6 @@ public class AppCache {
     private Context context;
 
     private AppCache() {
-        timer = new Timer();
     }
 
     public static AppCache getInstance() {
@@ -36,8 +35,16 @@ public class AppCache {
         return gameConfig;
     }
 
+    public void clear() {
+        timer.cancel();
+        MapView.GameConfig.mapInfo.clearInfo();
+        MapView.GameConfig.mapInfo = null;
+        gameConfig = null;
+    }
+
     public void setGameConfig(MapView.GameConfig gameConfig) {
         this.gameConfig = gameConfig;
+        timer = new Timer();
     }
 
     public Context getContext() {

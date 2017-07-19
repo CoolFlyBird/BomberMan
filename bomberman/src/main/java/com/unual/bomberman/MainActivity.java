@@ -2,6 +2,7 @@ package com.unual.bomberman;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 
@@ -15,14 +16,16 @@ public class MainActivity extends Activity {
             | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
             | View.SYSTEM_UI_FLAG_FULLSCREEN
             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+    private MapView mapview;
+    private GameView gameview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
-        MapView mapview = (MapView) findViewById(R.id.mapview);
-        GameView gameview = (GameView) findViewById(R.id.gameview);
+        mapview = (MapView) findViewById(R.id.mapview);
+        gameview = (GameView) findViewById(R.id.gameview);
         mapview.addMapCallback(gameview);
         gameview.setZOrderOnTop(true);
     }
@@ -36,5 +39,6 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        AppCache.getInstance().clear();
     }
 }

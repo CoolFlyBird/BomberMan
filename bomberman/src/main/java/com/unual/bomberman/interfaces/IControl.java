@@ -16,6 +16,4 @@ public interface IControl {
     void setAction(int action);
 
     void setDirection(int direction);
-
-    void setSpeed(int speedValue);
 }
