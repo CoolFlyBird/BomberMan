@@ -81,12 +81,8 @@ public class Bomber extends MoveModel implements IControl {
 
     @Override
     public boolean meetWith(BaseModel model) {
-        if (location.x == model.location.x && location.y == model.location.y) {
-            return true;
-        } else if (location.x == model.location.x) {
-
-        } else if (location.y == model.location.y) {
-
+        if (model instanceof MoveModel) {
+            return location.meetWith(model.location);
         }
         return false;
     }

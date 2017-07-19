@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -15,6 +16,7 @@ import com.unual.bomberman.R;
 import com.unual.bomberman.bean.Bomb;
 import com.unual.bomberman.bean.Bomber;
 import com.unual.bomberman.bean.EmyBall;
+import com.unual.bomberman.bean.Location;
 import com.unual.bomberman.bean.MoveModel;
 import com.unual.bomberman.interfaces.IControl;
 
@@ -39,7 +41,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Map
     private Bomber bomber;
     private List<MoveModel> emys;
     private List<Bomb> bombs;
-    private Bomb.BombCallback callback;
+    List<MoveModel> remove = new ArrayList<>();
 
     public GameView(Context context) {
         super(context);
@@ -169,7 +171,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Map
     private void initGame(MapView.GameConfig gameConfig, Bomb.BombCallback callback) {
         int mapWidth = gameConfig.getMapWidth();
         int mapHeight = gameConfig.getMapHeight();
-        this.callback = callback;
         timePerFrame = 1000 / gameConfig.mapFps;
         rx = r + padding;
         ry = mapHeight - r - padding;
@@ -211,9 +212,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Map
         if (canvas == null) return;
         canvas.drawColor(Color.WHITE);
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.SRC);
+        drawBomb(canvas);
         drawMan(canvas);
         drawEnemy(canvas);
-        drawBomb(canvas);
+        for (MoveModel emy : emys) {
+            if (bomber.meetWith(emy)) {
+                bomber.die();
+            } else {
+            }
+        }
         drawButton(canvas);
         mHolder.unlockCanvasAndPost(canvas);
     }
@@ -227,12 +234,21 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Map
 
 
     private void drawMan(Canvas canvas) {
+        if (bomber.isRemoved()) return;
         bomber.draw(canvas);
     }
 
     private void drawEnemy(Canvas canvas) {
         for (MoveModel emy : emys) {
-            emy.draw(canvas);
+            if (emy.isRemoved()) {
+                remove.add(emy);
+            } else {
+                emy.draw(canvas);
+            }
+        }
+        if (remove.size() != 0) {
+            emys.removeAll(remove);
+            remove.clear();
         }
     }
 
@@ -241,7 +257,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Map
             bomb.draw(canvas);
         }
     }
-
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {

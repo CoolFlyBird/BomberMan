@@ -1,7 +1,11 @@
 package com.unual.bomberman.bean;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
+import com.unual.bomberman.AppCache;
+import com.unual.bomberman.R;
 import com.unual.bomberman.interfaces.IControl;
 import com.unual.bomberman.view.MapView;
 
@@ -14,7 +18,12 @@ public abstract class MoveModel extends BaseModel {
     protected int nextDirection;
     protected float speed_value;
     protected boolean death;
+    protected int died_value;
     protected Speed speed;
+    private boolean removed;
+    private Bitmap icon_x;
+    private Bitmap icon_xx;
+    private Bitmap icon_xxx;
 
     public abstract void initLocation();
 
@@ -23,6 +32,28 @@ public abstract class MoveModel extends BaseModel {
     public abstract void onCrossRoad();
 
     public abstract void onDirectionError();
+
+    public boolean isRemoved() {
+        return removed;
+    }
+
+    public void die() {
+        death = true;
+        speed.xSpeed = 0;
+        speed.ySpeed = 0;
+        speed_value = 0;
+        died_value++;
+        if (icon_x == null) {
+            icon_x = BitmapFactory.decodeResource(AppCache.getInstance().getContext().getResources(), R.drawable.game_view_x);
+            icon_x = Bitmap.createScaledBitmap(icon_x, perWidth, perHeight, false);
+
+            icon_xx = BitmapFactory.decodeResource(AppCache.getInstance().getContext().getResources(), R.drawable.game_view_xx);
+            icon_xx = Bitmap.createScaledBitmap(icon_xx, perWidth, perHeight, false);
+
+            icon_xxx = BitmapFactory.decodeResource(AppCache.getInstance().getContext().getResources(), R.drawable.game_view_xxx);
+            icon_xxx = Bitmap.createScaledBitmap(icon_xxx, perWidth, perHeight, false);
+        }
+    }
 
     @Override
     public boolean canUp(int x, int y) {
@@ -171,11 +202,20 @@ public abstract class MoveModel extends BaseModel {
     }
 
     public void draw(Canvas canvas) {
-        if(checkDeath())return;
+        if (checkDeath()) die();
         changeDirectionCheck();
         updateLocation();
-        if (!death)
-            canvas.drawBitmap(icon, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
+        canvas.drawBitmap(icon, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
+        if (died_value >= MapView.GameConfig.mapFps / 3 && died_value <= MapView.GameConfig.mapFps * 2 / 3) {
+            canvas.drawBitmap(icon_x, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
+        } else if (died_value >= MapView.GameConfig.mapFps * 2 / 3 && died_value <= MapView.GameConfig.mapFps) {
+            canvas.drawBitmap(icon_xx, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
+        } else if (died_value >= MapView.GameConfig.mapFps && died_value <= MapView.GameConfig.mapFps * 4 / 3) {
+            canvas.drawBitmap(icon_xxx, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
+        } else if (died_value >= MapView.GameConfig.mapFps * 4 / 3) {
+            canvas.drawBitmap(icon_xxx, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
+            removed = true;
+        }
     }
 
 }

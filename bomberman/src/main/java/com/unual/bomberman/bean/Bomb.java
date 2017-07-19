@@ -154,6 +154,11 @@ public class Bomb extends BaseModel {
         return false;
     }
 
+    @Override
+    public boolean meetWith(BaseModel model) {
+        return false;
+    }
+
     public boolean isBackGround(int x, int y) {
         if (x < 0 || y > MapView.GameConfig.widthSize - 1) {
             return false;

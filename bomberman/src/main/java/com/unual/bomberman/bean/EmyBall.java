@@ -61,6 +61,14 @@ public class EmyBall extends MoveModel {
     }
 
     @Override
+    public boolean meetWith(BaseModel model) {
+        if (model instanceof EmyBall) {
+
+        }
+        return false;
+    }
+
+    @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
     }
