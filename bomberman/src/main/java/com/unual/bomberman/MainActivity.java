@@ -2,7 +2,6 @@ package com.unual.bomberman;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 
@@ -26,7 +25,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         mapview = (MapView) findViewById(R.id.mapview);
         gameview = (GameView) findViewById(R.id.gameview);
-        mapview.addMapCallback(gameview);
+        gameview.addCallback(mapview);
         gameview.setZOrderOnTop(true);
     }
 

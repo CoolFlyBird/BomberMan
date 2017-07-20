@@ -4,9 +4,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import com.unual.bomberman.AppCache;
+import com.unual.bomberman.GameConfig;
 import com.unual.bomberman.R;
 import com.unual.bomberman.interfaces.IControl;
-import com.unual.bomberman.view.MapView;
 
 import java.util.List;
 
@@ -67,7 +67,7 @@ public class Bomber extends MoveModel implements IControl {
 
     @Override
     public void onPoint() {
-        if (nextBomb && (mapInfo[location.x][location.y] != MapView.GameConfig.TYPE_TEMP)) {
+        if (nextBomb && (mapInfo[location.x][location.y] != GameConfig.TYPE_TEMP)) {
             for (Bomb bomb : bombs) {
                 if (!bomb.isPlaced()) {
                     bomb.setLocation(location.x, location.y);

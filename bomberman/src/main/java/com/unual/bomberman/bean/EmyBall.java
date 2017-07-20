@@ -6,8 +6,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
 import com.unual.bomberman.AppCache;
+import com.unual.bomberman.GameConfig;
 import com.unual.bomberman.R;
-import com.unual.bomberman.view.MapView;
 
 /**
  * Created by unual on 2017/7/12.
@@ -29,9 +29,9 @@ public class EmyBall extends MoveModel {
 
     @Override
     public void initLocation() {
-        int x = AppCache.getInstance().getGameConfig().random.nextInt(AppCache.getInstance().getGameConfig().getWidthSize() - 2) + 1;
-        int y = AppCache.getInstance().getGameConfig().random.nextInt(AppCache.getInstance().getGameConfig().getHeightSize() - 2) + 1;
-        if (mapInfo[x][y] != MapView.GameConfig.TYPE_BACKGROUND) {
+        int x = AppCache.getInstance().getRandom().nextInt(AppCache.getInstance().getGameConfig().getWidthSize() - 2) + 1;
+        int y = AppCache.getInstance().getRandom().nextInt(AppCache.getInstance().getGameConfig().getHeightSize() - 2) + 1;
+        if (mapInfo[x][y] != GameConfig.TYPE_BACKGROUND) {
             initLocation();
         } else {
             location.x = x;
@@ -54,14 +54,14 @@ public class EmyBall extends MoveModel {
 
     public void onDirectionError() {
         waitError++;
-        if (waitError == MapView.GameConfig.mapFps / 3) {
+        if (waitError == GameConfig.mapFps / 3) {
             waitError = 0;
             setRandomDirection();
         }
     }
 
     private void setRandomDirection() {
-        nextDirection = AppCache.getInstance().getGameConfig().random.nextInt(4) + 1;
+        nextDirection = AppCache.getInstance().getRandom().nextInt(4) + 1;
     }
 
     @Override

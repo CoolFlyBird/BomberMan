@@ -3,11 +3,10 @@ package com.unual.bomberman.bean;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.util.Log;
 
 import com.unual.bomberman.AppCache;
+import com.unual.bomberman.GameConfig;
 import com.unual.bomberman.R;
-import com.unual.bomberman.view.MapView;
 
 import java.util.TimerTask;
 
@@ -53,7 +52,7 @@ public class Bomb extends BaseModel {
     public void setLocation(int x, int y) {
         location.x = x;
         location.y = y;
-        mapInfo[location.x][location.y] = MapView.GameConfig.TYPE_TEMP;
+        mapInfo[location.x][location.y] = GameConfig.TYPE_TEMP;
         setPlaced();
     }
 
@@ -62,7 +61,7 @@ public class Bomb extends BaseModel {
         AppCache.getInstance().setDelayTask(new TimerTask() {
             @Override
             public void run() {
-                mapInfo[location.x][location.y] = MapView.GameConfig.TYPE_TEMP;
+                mapInfo[location.x][location.y] = GameConfig.TYPE_TEMP;
                 boom = true;
                 calcul = true;
                 callback.onFireOn(location.x, location.y, boomUpLength(), boomLeftLength(), boomRightLength(), boomDownLength());
@@ -71,7 +70,7 @@ public class Bomb extends BaseModel {
                     Thread.currentThread().sleep(BOOM_TIME);
                     boom = false;
                     isPlaced = false;
-                    mapInfo[location.x][location.y] = MapView.GameConfig.TYPE_BACKGROUND;
+                    mapInfo[location.x][location.y] = GameConfig.TYPE_BACKGROUND;
                     callback.onFireOff(location.x, location.y, boomUpLength(), boomLeftLength(), boomRightLength(), boomDownLength());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -117,17 +116,17 @@ public class Bomb extends BaseModel {
         if (y < 1) {
             return false;
         }
-        if (mapInfo[x][y - 1] <= MapView.GameConfig.TYPE_WALL) {
+        if (mapInfo[x][y - 1] <= GameConfig.TYPE_WALL) {
             return true;
         }
         return false;
     }
 
     public boolean canDown(int x, int y) {
-        if (y >= MapView.GameConfig.heightSize - 1) {
+        if (y >= GameConfig.heightSize - 1) {
             return false;
         }
-        if (mapInfo[x][y + 1] <= MapView.GameConfig.TYPE_WALL) {
+        if (mapInfo[x][y + 1] <= GameConfig.TYPE_WALL) {
             return true;
         }
         return false;
@@ -137,27 +136,27 @@ public class Bomb extends BaseModel {
         if (x < 1) {
             return false;
         }
-        if (mapInfo[x - 1][y] <= MapView.GameConfig.TYPE_WALL) {
+        if (mapInfo[x - 1][y] <= GameConfig.TYPE_WALL) {
             return true;
         }
         return false;
     }
 
     public boolean canRight(int x, int y) {
-        if (x >= MapView.GameConfig.widthSize - 1) {
+        if (x >= GameConfig.widthSize - 1) {
             return false;
         }
-        if (mapInfo[x + 1][y] <= MapView.GameConfig.TYPE_WALL) {
+        if (mapInfo[x + 1][y] <= GameConfig.TYPE_WALL) {
             return true;
         }
         return false;
     }
 
     public boolean isBackGround(int x, int y) {
-        if (x < 0 || y > MapView.GameConfig.widthSize - 1) {
+        if (x < 0 || y > GameConfig.widthSize - 1) {
             return false;
         }
-        if (mapInfo[x][y] == MapView.GameConfig.TYPE_BACKGROUND || mapInfo[x][y] == MapView.GameConfig.TYPE_TEMP) {
+        if (mapInfo[x][y] == GameConfig.TYPE_BACKGROUND || mapInfo[x][y] == GameConfig.TYPE_TEMP) {
             return true;
         }
         return false;

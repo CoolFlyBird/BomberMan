@@ -2,8 +2,7 @@ package com.unual.bomberman;
 
 import android.content.Context;
 
-import com.unual.bomberman.view.MapView;
-
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -13,8 +12,9 @@ import java.util.TimerTask;
 
 public class AppCache {
     private static AppCache mInstance;
+    public Random random = new Random();
     private Timer timer;
-    private MapView.GameConfig gameConfig;
+    private GameConfig gameConfig;
     private Context context;
 
     private AppCache() {
@@ -27,22 +27,26 @@ public class AppCache {
         return mInstance;
     }
 
+    public Random getRandom() {
+        return random;
+    }
+
     public void setDelayTask(TimerTask task, int milliseconds) {
         timer.schedule(task, milliseconds);
     }
 
-    public MapView.GameConfig getGameConfig() {
+    public GameConfig getGameConfig() {
         return gameConfig;
     }
 
     public void clear() {
         timer.cancel();
-        MapView.GameConfig.mapInfo.clearInfo();
-        MapView.GameConfig.mapInfo = null;
+        gameConfig.mapInfo.clearInfo();
+        gameConfig.mapInfo = null;
         gameConfig = null;
     }
 
-    public void setGameConfig(MapView.GameConfig gameConfig) {
+    public void setGameConfig(GameConfig gameConfig) {
         this.gameConfig = gameConfig;
         timer = new Timer();
     }

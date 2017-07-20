@@ -5,9 +5,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
 import com.unual.bomberman.AppCache;
+import com.unual.bomberman.GameConfig;
 import com.unual.bomberman.R;
 import com.unual.bomberman.interfaces.IControl;
-import com.unual.bomberman.view.MapView;
 
 /**
  * Created by unual on 2017/7/14.
@@ -62,7 +62,7 @@ public abstract class MoveModel extends BaseModel {
         if (y < 1) {
             return false;
         }
-        if (mapInfo[x][y - 1] == MapView.GameConfig.TYPE_BACKGROUND || mapInfo[x][y - 1] == MapView.GameConfig.TYPE_FIRE) {
+        if (mapInfo[x][y - 1] == GameConfig.TYPE_BACKGROUND || mapInfo[x][y - 1] == GameConfig.TYPE_FIRE) {
             return true;
         }
         return false;
@@ -72,27 +72,27 @@ public abstract class MoveModel extends BaseModel {
         if (x < 1) {
             return false;
         }
-        if (mapInfo[x - 1][y] == MapView.GameConfig.TYPE_BACKGROUND || mapInfo[x - 1][y] == MapView.GameConfig.TYPE_FIRE) {
+        if (mapInfo[x - 1][y] == GameConfig.TYPE_BACKGROUND || mapInfo[x - 1][y] == GameConfig.TYPE_FIRE) {
             return true;
         }
         return false;
     }
 
     public boolean canRight(int x, int y) {
-        if (x >= MapView.GameConfig.widthSize - 1) {
+        if (x >= GameConfig.widthSize - 1) {
             return false;
         }
-        if (mapInfo[x + 1][y] == MapView.GameConfig.TYPE_BACKGROUND || mapInfo[x + 1][y] == MapView.GameConfig.TYPE_FIRE) {
+        if (mapInfo[x + 1][y] == GameConfig.TYPE_BACKGROUND || mapInfo[x + 1][y] == GameConfig.TYPE_FIRE) {
             return true;
         }
         return false;
     }
 
     public boolean canDown(int x, int y) {
-        if (y >= MapView.GameConfig.heightSize - 1) {
+        if (y >= GameConfig.heightSize - 1) {
             return false;
         }
-        if (mapInfo[x][y + 1] == MapView.GameConfig.TYPE_BACKGROUND || mapInfo[x][y + 1] == MapView.GameConfig.TYPE_FIRE) {
+        if (mapInfo[x][y + 1] == GameConfig.TYPE_BACKGROUND || mapInfo[x][y + 1] == GameConfig.TYPE_FIRE) {
             return true;
         }
         return false;
@@ -105,19 +105,19 @@ public abstract class MoveModel extends BaseModel {
     }
 
     public boolean checkDeath() {
-        if (mapInfo[location.x][location.y] == MapView.GameConfig.TYPE_FIRE) {
+        if (mapInfo[location.x][location.y] == GameConfig.TYPE_FIRE) {
             death = true;
         } else {
-            if (location.yOffset < -0.5 && location.y > 0 && mapInfo[location.x][location.y - 1] == MapView.GameConfig.TYPE_FIRE) {
+            if (location.yOffset < -0.5 && location.y > 0 && mapInfo[location.x][location.y - 1] == GameConfig.TYPE_FIRE) {
                 death = true;
             }
-            if (location.yOffset > 0.5 && location.y < MapView.GameConfig.heightSize - 2 && mapInfo[location.x][location.y + 1] == MapView.GameConfig.TYPE_FIRE) {
+            if (location.yOffset > 0.5 && location.y < GameConfig.heightSize - 2 && mapInfo[location.x][location.y + 1] == GameConfig.TYPE_FIRE) {
                 death = true;
             }
-            if (location.xOffset < -0.5 && location.x > 0 && mapInfo[location.x - 1][location.y] == MapView.GameConfig.TYPE_FIRE) {
+            if (location.xOffset < -0.5 && location.x > 0 && mapInfo[location.x - 1][location.y] == GameConfig.TYPE_FIRE) {
                 death = true;
             }
-            if (location.xOffset > 0.5 && location.x < MapView.GameConfig.widthSize - 2 && mapInfo[location.x + 1][location.y] == MapView.GameConfig.TYPE_FIRE) {
+            if (location.xOffset > 0.5 && location.x < GameConfig.widthSize - 2 && mapInfo[location.x + 1][location.y] == GameConfig.TYPE_FIRE) {
                 death = true;
             }
         }
@@ -205,13 +205,13 @@ public abstract class MoveModel extends BaseModel {
         changeDirectionCheck();
         updateLocation();
         canvas.drawBitmap(icon, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
-        if (died_value >= MapView.GameConfig.mapFps * 2 / 3 && died_value <= MapView.GameConfig.mapFps * 2 * 2 / 3) {
+        if (died_value >= GameConfig.mapFps * 2 / 3 && died_value <= GameConfig.mapFps * 2 * 2 / 3) {
             canvas.drawBitmap(icon_x, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
-        } else if (died_value >= MapView.GameConfig.mapFps * 2 * 2 / 3 && died_value <= MapView.GameConfig.mapFps * 2) {
+        } else if (died_value >= GameConfig.mapFps * 2 * 2 / 3 && died_value <= GameConfig.mapFps * 2) {
             canvas.drawBitmap(icon_xx, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
-        } else if (died_value >= MapView.GameConfig.mapFps * 2 && died_value <= MapView.GameConfig.mapFps * 2 * 4 / 3) {
+        } else if (died_value >= GameConfig.mapFps * 2 && died_value <= GameConfig.mapFps * 2 * 4 / 3) {
             canvas.drawBitmap(icon_xxx, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
-        } else if (died_value >= MapView.GameConfig.mapFps * 2 * 4 / 3) {
+        } else if (died_value >= GameConfig.mapFps * 2 * 4 / 3) {
             canvas.drawBitmap(icon_xxx, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
             removed = true;
         }

@@ -26,7 +26,7 @@ public class AppSharedPreferences {
         return mInstance;
     }
 
-    public void setGameConfig(MapView.GameConfig gameConfig) {
+    public void setGameConfig(GameConfig gameConfig) {
 //        editor.putString("gameconfig", gameConfig);
         editor.commit();
     }

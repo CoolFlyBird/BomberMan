@@ -17,33 +17,11 @@ public class InitApplication extends Application {
     public void onCreate() {
         super.onCreate();
         AppCache.getInstance().setContext(this);
-        AppCache.getInstance().setGameConfig(new MapView.GameConfig());
-    }
-
-    public InitApplication() {
-        super();
+        AppCache.getInstance().setGameConfig(new GameConfig(1920, 1080));
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (AppCache.getInstance().getGameConfig() == null) {
-            AppCache.getInstance().setGameConfig(new MapView.GameConfig());
-        }
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-    }
-
-    @Override
-    public void onTrimMemory(int level) {
-        super.onTrimMemory(level);
-    }
-
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
     }
 }

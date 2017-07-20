@@ -7,17 +7,16 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.Toast;
 
-import com.unual.bomberman.R;
+import com.unual.bomberman.AppCache;
+import com.unual.bomberman.GameConfig;
 import com.unual.bomberman.bean.Bomb;
 import com.unual.bomberman.bean.Bomber;
 import com.unual.bomberman.bean.EmyBall;
-import com.unual.bomberman.bean.Location;
 import com.unual.bomberman.bean.MoveModel;
 import com.unual.bomberman.bean.PropBomb;
 import com.unual.bomberman.bean.PropDoor;
@@ -31,7 +30,7 @@ import java.util.List;
  * Created by unual on 2017/7/6.
  */
 
-public class GameView extends SurfaceView implements SurfaceHolder.Callback, MapView.MapCallback {
+public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder mHolder;
     private Paint paint;
     private float rx, ry;
@@ -48,6 +47,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Map
     private PropModel propDoor;
     private PropModel propBomb;
     List<MoveModel> remove = new ArrayList<>();
+    private int mapWidth;
+    private int mapHeight;
+    private GameConfig gameConfig;
+    private Bomb.BombCallback callback;
 
 
     public GameView(Context context) {
@@ -68,6 +71,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Map
         paint.setStrokeWidth(3);
         paint.setColor(Color.RED);
         paint.setStyle(Paint.Style.STROKE);
+        propDoor = new PropDoor();
+        propBomb = new PropBomb();
+        this.gameConfig = AppCache.getInstance().getGameConfig();
+        gameConfig.setPropDoor(propDoor);
+        gameConfig.setPropBomb(propBomb);
     }
 
     @Override
@@ -174,26 +182,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Map
         }
     }
 
-
-    private void initGame(MapView.GameConfig gameConfig, Bomb.BombCallback callback) {
-        int mapWidth = gameConfig.getMapWidth();
-        int mapHeight = gameConfig.getMapHeight();
-        timePerFrame = 1000 / gameConfig.mapFps;
-        rx = r + padding;
-        ry = mapHeight - r - padding;
-        arx = mapWidth - ar - apadding;
-        ary = mapHeight - ar - apadding;
-        bombs = new ArrayList<>();
-        emys = new ArrayList<>();
-        bomber = new Bomber(bombs);
-        propDoor = gameConfig.getPropDoor();
-        propBomb = gameConfig.getPropBomb();
-        for (int i = 0; i < gameConfig.getBombCount(); i++) {
-            bombs.add(new Bomb(callback));
-        }
-        for (int i = 0; i < gameConfig.getEmyCount(); i++) {
-            emys.add(new EmyBall());
-        }
+    public void addCallback(Bomb.BombCallback callback){
+        this.callback = callback;
     }
 
     private void startRender() {
@@ -302,15 +292,29 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Map
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        mapWidth = width;
+        mapHeight = height;
+
+        timePerFrame = 1000 / gameConfig.mapFps;
+        rx = r + padding;
+        ry = mapHeight - r - padding;
+        arx = mapWidth - ar - apadding;
+        ary = mapHeight - ar - apadding;
+        bombs = new ArrayList<>();
+        emys = new ArrayList<>();
+        bomber = new Bomber(bombs);
+        propDoor = gameConfig.getPropDoor();
+        propBomb = gameConfig.getPropBomb();
+        for (int i = 0; i < gameConfig.getBombCount(); i++) {
+            bombs.add(new Bomb(callback));
+        }
+        for (int i = 0; i < gameConfig.getEmyCount(); i++) {
+            emys.add(new EmyBall());
+        }
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         onPause = true;
-    }
-
-    @Override
-    public void onMapConfiged(MapView.GameConfig gameConfig, Bomb.BombCallback callback) {
-        initGame(gameConfig, callback);
     }
 }
