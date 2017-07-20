@@ -39,13 +39,6 @@ public class AppCache {
         return gameConfig;
     }
 
-    public void clear() {
-        timer.cancel();
-        gameConfig.mapInfo.clearInfo();
-        gameConfig.mapInfo = null;
-        gameConfig = null;
-    }
-
     public void setGameConfig(GameConfig gameConfig) {
         this.gameConfig = gameConfig;
         timer = new Timer();
@@ -60,8 +53,6 @@ public class AppCache {
     }
 
     public void clean() {
-        if (gameConfig != null)
-            gameConfig.clean();
         gameConfig = null;
         context = null;
         mInstance = null;

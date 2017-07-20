@@ -21,7 +21,8 @@ public class Bomber extends MoveModel implements IControl {
     protected boolean skipPass;
 
 
-    public Bomber(List<Bomb> bombs) {
+    public Bomber(GameConfig gameConfig, List<Bomb> bombs) {
+        super(gameConfig);
         this.bombs = bombs;
         location = new Location();
         speed = new Speed();
@@ -30,6 +31,14 @@ public class Bomber extends MoveModel implements IControl {
         icon = BitmapFactory.decodeResource(AppCache.getInstance().getContext().getResources(), R.drawable.game_view_man);
         icon = Bitmap.createScaledBitmap(icon, perWidth, perHeight, false);
         initLocation();
+    }
+
+    public void reset() {
+        super.reset();
+        nextDirection = DIRECTION_NONE;
+        nextBomb = false;
+        skip = false;
+        skipPass = false;
     }
 
     public boolean isSkip() {
@@ -67,7 +76,7 @@ public class Bomber extends MoveModel implements IControl {
 
     @Override
     public void onPoint() {
-        if (nextBomb && (mapInfo[location.x][location.y] != GameConfig.TYPE_TEMP)) {
+        if (nextBomb && (mapInfo[location.x][location.y] != GameConfig.MAP_TYPE_TEMP)) {
             for (Bomb bomb : bombs) {
                 if (!bomb.isPlaced()) {
                     bomb.setLocation(location.x, location.y);

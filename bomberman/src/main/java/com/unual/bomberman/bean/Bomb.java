@@ -28,7 +28,8 @@ public class Bomb extends BaseModel {
     private int rightLength = 0;
     private int downLength = 0;
 
-    public Bomb(BombCallback callback) {
+    public Bomb(GameConfig gameConfig, BombCallback callback) {
+        super(gameConfig);
         this.callback = callback;
         location = new Location();
         icon = BitmapFactory.decodeResource(AppCache.getInstance().getContext().getResources(), R.drawable.game_view_bomb);
@@ -39,6 +40,10 @@ public class Bomb extends BaseModel {
         vertical = Bitmap.createScaledBitmap(vertical, perWidth, perHeight, false);
         center = BitmapFactory.decodeResource(AppCache.getInstance().getContext().getResources(), R.drawable.game_view_bomb_center);
         center = Bitmap.createScaledBitmap(center, perWidth, perHeight, false);
+    }
+
+    public static void resetLength() {
+        bombLength = 1;
     }
 
     public static void increaseLength() {
@@ -52,7 +57,7 @@ public class Bomb extends BaseModel {
     public void setLocation(int x, int y) {
         location.x = x;
         location.y = y;
-        mapInfo[location.x][location.y] = GameConfig.TYPE_TEMP;
+        mapInfo[location.x][location.y] = GameConfig.MAP_TYPE_TEMP;
         setPlaced();
     }
 
@@ -61,7 +66,7 @@ public class Bomb extends BaseModel {
         AppCache.getInstance().setDelayTask(new TimerTask() {
             @Override
             public void run() {
-                mapInfo[location.x][location.y] = GameConfig.TYPE_TEMP;
+                mapInfo[location.x][location.y] = GameConfig.MAP_TYPE_TEMP;
                 boom = true;
                 calcul = true;
                 callback.onFireOn(location.x, location.y, boomUpLength(), boomLeftLength(), boomRightLength(), boomDownLength());
@@ -70,7 +75,7 @@ public class Bomb extends BaseModel {
                     Thread.currentThread().sleep(BOOM_TIME);
                     boom = false;
                     isPlaced = false;
-                    mapInfo[location.x][location.y] = GameConfig.TYPE_BACKGROUND;
+                    mapInfo[location.x][location.y] = GameConfig.MAP_TYPE_BACKGROUND;
                     callback.onFireOff(location.x, location.y, boomUpLength(), boomLeftLength(), boomRightLength(), boomDownLength());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -116,17 +121,17 @@ public class Bomb extends BaseModel {
         if (y < 1) {
             return false;
         }
-        if (mapInfo[x][y - 1] <= GameConfig.TYPE_WALL) {
+        if (mapInfo[x][y - 1] <= GameConfig.MAP_TYPE_WALL) {
             return true;
         }
         return false;
     }
 
     public boolean canDown(int x, int y) {
-        if (y >= GameConfig.heightSize - 1) {
+        if (y >= GameConfig.HEIGHT_SIZE - 1) {
             return false;
         }
-        if (mapInfo[x][y + 1] <= GameConfig.TYPE_WALL) {
+        if (mapInfo[x][y + 1] <= GameConfig.MAP_TYPE_WALL) {
             return true;
         }
         return false;
@@ -136,27 +141,27 @@ public class Bomb extends BaseModel {
         if (x < 1) {
             return false;
         }
-        if (mapInfo[x - 1][y] <= GameConfig.TYPE_WALL) {
+        if (mapInfo[x - 1][y] <= GameConfig.MAP_TYPE_WALL) {
             return true;
         }
         return false;
     }
 
     public boolean canRight(int x, int y) {
-        if (x >= GameConfig.widthSize - 1) {
+        if (x >= GameConfig.WIDTH_SIZE - 1) {
             return false;
         }
-        if (mapInfo[x + 1][y] <= GameConfig.TYPE_WALL) {
+        if (mapInfo[x + 1][y] <= GameConfig.MAP_TYPE_WALL) {
             return true;
         }
         return false;
     }
 
     public boolean isBackGround(int x, int y) {
-        if (x < 0 || y > GameConfig.widthSize - 1) {
+        if (x < 0 || y > GameConfig.WIDTH_SIZE - 1) {
             return false;
         }
-        if (mapInfo[x][y] == GameConfig.TYPE_BACKGROUND || mapInfo[x][y] == GameConfig.TYPE_TEMP) {
+        if (mapInfo[x][y] == GameConfig.MAP_TYPE_BACKGROUND || mapInfo[x][y] == GameConfig.MAP_TYPE_TEMP) {
             return true;
         }
         return false;

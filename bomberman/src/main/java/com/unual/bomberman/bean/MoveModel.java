@@ -17,14 +17,18 @@ public abstract class MoveModel extends BaseModel {
     protected static int[] LEVEL = {22, 18, 15, 13, 11, 10, 9};
     protected int nextDirection;
     protected float speed_value;
-    protected boolean death;
-    protected int died_value;
     protected Speed speed;
     protected int level;
+    protected boolean death;
+    protected int died_value;
     private boolean removed;
     private Bitmap icon_x;
     private Bitmap icon_xx;
     private Bitmap icon_xxx;
+
+    public MoveModel(GameConfig gameConfig) {
+        super(gameConfig);
+    }
 
     public abstract void initLocation();
 
@@ -38,6 +42,14 @@ public abstract class MoveModel extends BaseModel {
 
     public boolean isRemoved() {
         return removed;
+    }
+
+    public void reset() {
+        died_value = 0;
+        speed_value = (float) (1.0 / LEVEL[level]);
+        removed = false;
+        death = false;
+        initLocation();
     }
 
     public void die() {
@@ -62,7 +74,7 @@ public abstract class MoveModel extends BaseModel {
         if (y < 1) {
             return false;
         }
-        if (mapInfo[x][y - 1] == GameConfig.TYPE_BACKGROUND || mapInfo[x][y - 1] == GameConfig.TYPE_FIRE) {
+        if (mapInfo[x][y - 1] == GameConfig.MAP_TYPE_BACKGROUND || mapInfo[x][y - 1] == GameConfig.MAP_TYPE_FIRE) {
             return true;
         }
         return false;
@@ -72,27 +84,27 @@ public abstract class MoveModel extends BaseModel {
         if (x < 1) {
             return false;
         }
-        if (mapInfo[x - 1][y] == GameConfig.TYPE_BACKGROUND || mapInfo[x - 1][y] == GameConfig.TYPE_FIRE) {
+        if (mapInfo[x - 1][y] == GameConfig.MAP_TYPE_BACKGROUND || mapInfo[x - 1][y] == GameConfig.MAP_TYPE_FIRE) {
             return true;
         }
         return false;
     }
 
     public boolean canRight(int x, int y) {
-        if (x >= GameConfig.widthSize - 1) {
+        if (x >= GameConfig.WIDTH_SIZE - 1) {
             return false;
         }
-        if (mapInfo[x + 1][y] == GameConfig.TYPE_BACKGROUND || mapInfo[x + 1][y] == GameConfig.TYPE_FIRE) {
+        if (mapInfo[x + 1][y] == GameConfig.MAP_TYPE_BACKGROUND || mapInfo[x + 1][y] == GameConfig.MAP_TYPE_FIRE) {
             return true;
         }
         return false;
     }
 
     public boolean canDown(int x, int y) {
-        if (y >= GameConfig.heightSize - 1) {
+        if (y >= GameConfig.HEIGHT_SIZE - 1) {
             return false;
         }
-        if (mapInfo[x][y + 1] == GameConfig.TYPE_BACKGROUND || mapInfo[x][y + 1] == GameConfig.TYPE_FIRE) {
+        if (mapInfo[x][y + 1] == GameConfig.MAP_TYPE_BACKGROUND || mapInfo[x][y + 1] == GameConfig.MAP_TYPE_FIRE) {
             return true;
         }
         return false;
@@ -105,19 +117,19 @@ public abstract class MoveModel extends BaseModel {
     }
 
     public boolean checkDeath() {
-        if (mapInfo[location.x][location.y] == GameConfig.TYPE_FIRE) {
+        if (mapInfo[location.x][location.y] == GameConfig.MAP_TYPE_FIRE) {
             death = true;
         } else {
-            if (location.yOffset < -0.5 && location.y > 0 && mapInfo[location.x][location.y - 1] == GameConfig.TYPE_FIRE) {
+            if (location.yOffset < -0.5 && location.y > 0 && mapInfo[location.x][location.y - 1] == GameConfig.MAP_TYPE_FIRE) {
                 death = true;
             }
-            if (location.yOffset > 0.5 && location.y < GameConfig.heightSize - 2 && mapInfo[location.x][location.y + 1] == GameConfig.TYPE_FIRE) {
+            if (location.yOffset > 0.5 && location.y < GameConfig.HEIGHT_SIZE - 2 && mapInfo[location.x][location.y + 1] == GameConfig.MAP_TYPE_FIRE) {
                 death = true;
             }
-            if (location.xOffset < -0.5 && location.x > 0 && mapInfo[location.x - 1][location.y] == GameConfig.TYPE_FIRE) {
+            if (location.xOffset < -0.5 && location.x > 0 && mapInfo[location.x - 1][location.y] == GameConfig.MAP_TYPE_FIRE) {
                 death = true;
             }
-            if (location.xOffset > 0.5 && location.x < GameConfig.widthSize - 2 && mapInfo[location.x + 1][location.y] == GameConfig.TYPE_FIRE) {
+            if (location.xOffset > 0.5 && location.x < GameConfig.WIDTH_SIZE - 2 && mapInfo[location.x + 1][location.y] == GameConfig.MAP_TYPE_FIRE) {
                 death = true;
             }
         }
@@ -205,13 +217,13 @@ public abstract class MoveModel extends BaseModel {
         changeDirectionCheck();
         updateLocation();
         canvas.drawBitmap(icon, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
-        if (died_value >= GameConfig.mapFps * 2 / 3 && died_value <= GameConfig.mapFps * 2 * 2 / 3) {
+        if (died_value >= GameConfig.MAP_FPS * 2 / 3 && died_value <= GameConfig.MAP_FPS * 2 * 2 / 3) {
             canvas.drawBitmap(icon_x, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
-        } else if (died_value >= GameConfig.mapFps * 2 * 2 / 3 && died_value <= GameConfig.mapFps * 2) {
+        } else if (died_value >= GameConfig.MAP_FPS * 2 * 2 / 3 && died_value <= GameConfig.MAP_FPS * 2) {
             canvas.drawBitmap(icon_xx, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
-        } else if (died_value >= GameConfig.mapFps * 2 && died_value <= GameConfig.mapFps * 2 * 4 / 3) {
+        } else if (died_value >= GameConfig.MAP_FPS * 2 && died_value <= GameConfig.MAP_FPS * 2 * 4 / 3) {
             canvas.drawBitmap(icon_xxx, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
-        } else if (died_value >= GameConfig.mapFps * 2 * 4 / 3) {
+        } else if (died_value >= GameConfig.MAP_FPS * 2 * 4 / 3) {
             canvas.drawBitmap(icon_xxx, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
             removed = true;
         }

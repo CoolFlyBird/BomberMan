@@ -2,6 +2,8 @@ package com.unual.bomberman.bean;
 
 import android.graphics.Canvas;
 
+import com.unual.bomberman.GameConfig;
+
 import java.security.PublicKey;
 
 /**
@@ -12,7 +14,8 @@ public abstract class PropModel extends BaseModel {
     private boolean isShow;
     private boolean eat;
 
-    public PropModel() {
+    public PropModel(GameConfig gameConfig) {
+        super(gameConfig);
         location = new Location();
     }
 

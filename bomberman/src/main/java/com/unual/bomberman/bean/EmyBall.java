@@ -18,7 +18,8 @@ public class EmyBall extends MoveModel {
     private int walkOverCrossRoadCount = 0;
     private int waitError = 0;
 
-    public EmyBall() {
+    public EmyBall(GameConfig gameConfig) {
+        super(gameConfig);
         location = new Location();
         speed = new Speed();
         speed_value = (float) (1.0 / LEVEL[level]);
@@ -29,9 +30,9 @@ public class EmyBall extends MoveModel {
 
     @Override
     public void initLocation() {
-        int x = AppCache.getInstance().getRandom().nextInt(AppCache.getInstance().getGameConfig().getWidthSize() - 2) + 1;
-        int y = AppCache.getInstance().getRandom().nextInt(AppCache.getInstance().getGameConfig().getHeightSize() - 2) + 1;
-        if (mapInfo[x][y] != GameConfig.TYPE_BACKGROUND) {
+        int x = AppCache.getInstance().getRandom().nextInt(GameConfig.WIDTH_SIZE - 2) + 1;
+        int y = AppCache.getInstance().getRandom().nextInt(GameConfig.HEIGHT_SIZE - 2) + 1;
+        if (mapInfo[x][y] != GameConfig.MAP_TYPE_BACKGROUND) {
             initLocation();
         } else {
             location.x = x;
@@ -54,7 +55,7 @@ public class EmyBall extends MoveModel {
 
     public void onDirectionError() {
         waitError++;
-        if (waitError == GameConfig.mapFps / 3) {
+        if (waitError == GameConfig.MAP_FPS / 3) {
             waitError = 0;
             setRandomDirection();
         }

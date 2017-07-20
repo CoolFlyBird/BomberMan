@@ -6,7 +6,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
+import android.os.Looper;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -18,13 +20,13 @@ import com.unual.bomberman.bean.Bomb;
 import com.unual.bomberman.bean.Bomber;
 import com.unual.bomberman.bean.EmyBall;
 import com.unual.bomberman.bean.MoveModel;
-import com.unual.bomberman.bean.PropBomb;
-import com.unual.bomberman.bean.PropDoor;
 import com.unual.bomberman.bean.PropModel;
+import com.unual.bomberman.interfaces.ChapterCallback;
 import com.unual.bomberman.interfaces.IControl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimerTask;
 
 /**
  * Created by unual on 2017/7/6.
@@ -41,17 +43,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private int apadding = 200;
     private boolean onPause;
     private long timePerFrame;
+    List<MoveModel> remove = new ArrayList<>();
     private Bomber bomber;
     private List<MoveModel> emys;
     private List<Bomb> bombs;
-    private PropModel propDoor;
-    private PropModel propBomb;
-    List<MoveModel> remove = new ArrayList<>();
-    private int mapWidth;
-    private int mapHeight;
+    private PropModel door;
+    private PropModel prop;
     private GameConfig gameConfig;
-    private Bomb.BombCallback callback;
-
+    private ChapterCallback chapterCallback;
 
     public GameView(Context context) {
         super(context);
@@ -63,6 +62,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         init();
     }
 
+    public void addChapterCallback(ChapterCallback chapterCallback) {
+        this.chapterCallback = chapterCallback;
+    }
+
     private void init() {
         mHolder = getHolder();
         mHolder.setFormat(PixelFormat.TRANSPARENT);
@@ -71,11 +74,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         paint.setStrokeWidth(3);
         paint.setColor(Color.RED);
         paint.setStyle(Paint.Style.STROKE);
-        propDoor = new PropDoor();
-        propBomb = new PropBomb();
-        this.gameConfig = AppCache.getInstance().getGameConfig();
-        gameConfig.setPropDoor(propDoor);
-        gameConfig.setPropBomb(propBomb);
+
+        gameConfig = AppCache.getInstance().getGameConfig();
+        bomber = gameConfig.getBomber();
+        emys = gameConfig.getEmys();
+        bombs = gameConfig.getBombs();
+        door = gameConfig.getDoor();
+        prop = gameConfig.getProp();
     }
 
     @Override
@@ -182,11 +187,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    public void addCallback(Bomb.BombCallback callback){
-        this.callback = callback;
-    }
-
-    private void startRender() {
+    public void startRender() {
+        onPause = false;
+        if (Looper.getMainLooper() != Looper.myLooper()) {
+            Looper.prepare();
+        }
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -208,17 +213,26 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     void render() {
-        Canvas canvas = mHolder.lockCanvas();
-        if (canvas == null) return;
-        canvas.drawColor(Color.WHITE);
-        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.SRC);
-        drawBomb(canvas);
-        propBomb.draw(canvas);
-        propDoor.draw(canvas);
-        drawMan(canvas);
-        drawEnemy(canvas);
-        drawButton(canvas);
-        mHolder.unlockCanvasAndPost(canvas);
+        Canvas canvas = null;
+        try {
+            canvas = mHolder.lockCanvas();
+            if (canvas != null) {
+                canvas.drawColor(Color.WHITE);
+                canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.SRC);
+                drawBomb(canvas);
+                prop.draw(canvas);
+                door.draw(canvas);
+                drawMan(canvas);
+                drawEnemy(canvas);
+                drawButton(canvas);
+            }
+        } catch (Exception e) {
+            Log.e("123", "gameview:" + e.getMessage());
+        } finally {
+            if (canvas != null) {
+                mHolder.unlockCanvasAndPost(canvas);
+            }
+        }
     }
 
     private void drawButton(Canvas canvas) {
@@ -236,24 +250,38 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 @Override
                 public void run() {
                     Toast.makeText(getContext(), "游戏结束", Toast.LENGTH_SHORT).show();
+                    onPause = true;
                 }
             });
             bomber.setSkip(true);
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    chapterCallback.reStartGame();
+                }
+            }, 3000);
         } else {
             bomber.draw(canvas);
         }
-        if (propBomb.isShow() && bomber.meetWith(propBomb)) {
+        if (prop.isShow() && bomber.meetWith(prop)) {
             Bomb.increaseLength();
-            propBomb.setEat(true);
+            prop.setEat(true);
         }
         if (bomber.isSkipPass()) return;
-        if (propDoor.isShow() && emys.size() == 0 && bomber.meetWith(propDoor)) {
+        if (door.isShow() && emys.size() == 0 && bomber.meetWith(door)) {
             post(new Runnable() {
                 @Override
                 public void run() {
                     Toast.makeText(getContext(), "恭喜过关", Toast.LENGTH_SHORT).show();
+                    onPause = true;
                 }
             });
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    chapterCallback.nextChapter();
+                }
+            }, 3000);
             bomber.setSkipPass(true);
         }
     }
@@ -292,25 +320,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        mapWidth = width;
-        mapHeight = height;
-
-        timePerFrame = 1000 / gameConfig.mapFps;
+        timePerFrame = 1000 / gameConfig.MAP_FPS;
         rx = r + padding;
-        ry = mapHeight - r - padding;
-        arx = mapWidth - ar - apadding;
-        ary = mapHeight - ar - apadding;
-        bombs = new ArrayList<>();
-        emys = new ArrayList<>();
-        bomber = new Bomber(bombs);
-        propDoor = gameConfig.getPropDoor();
-        propBomb = gameConfig.getPropBomb();
-        for (int i = 0; i < gameConfig.getBombCount(); i++) {
-            bombs.add(new Bomb(callback));
-        }
-        for (int i = 0; i < gameConfig.getEmyCount(); i++) {
-            emys.add(new EmyBall());
-        }
+        ry = height - r - padding;
+        arx = width - ar - apadding;
+        ary = height - ar - apadding;
     }
 
     @Override

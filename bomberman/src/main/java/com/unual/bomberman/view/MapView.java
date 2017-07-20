@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
 import com.unual.bomberman.AppCache;
 import com.unual.bomberman.GameConfig;
@@ -35,33 +36,48 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback, Bomb
         mHolder.setFormat(PixelFormat.TRANSPARENT);
         mHolder.addCallback(this);
         gameConfig = AppCache.getInstance().getGameConfig();
+        for (int i = 0; i < gameConfig.getBombCount(); i++) {
+            gameConfig.getBombs().add(new Bomb(gameConfig, this));
+        }
     }
 
-    private void renderMap() {
-        Canvas canvas = mHolder.lockCanvas();
-        drawMap(canvas);
-        mHolder.unlockCanvasAndPost(canvas);
-    }
-
-    public void addCallbak() {
-
+    public void renderMap() {
+        post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getContext(), "level " + gameConfig.getMapLevel(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        Canvas canvas = null;
+        try {
+            canvas = mHolder.lockCanvas();
+            if (canvas != null) {
+                drawMap(canvas);
+            }
+        } catch (Exception e) {
+            Log.e("123", "mapview:" + e.getMessage());
+        } finally {
+            if (canvas != null) {
+                mHolder.unlockCanvasAndPost(canvas);
+            }
+        }
     }
 
     private void drawMap(Canvas canvas) {
         int x, y;
-        for (y = 0; y < gameConfig.heightSize; y++) {
-            for (x = 0; x < gameConfig.widthSize; x++) {
-                switch (gameConfig.mapInfo.getInfo()[x][y]) {
-                    case GameConfig.TYPE_BRICK:
-                        canvas.drawBitmap(gameConfig.brick, x * gameConfig.perWidth, y * gameConfig.perHeight, null);
+        for (y = 0; y < gameConfig.HEIGHT_SIZE; y++) {
+            for (x = 0; x < gameConfig.WIDTH_SIZE; x++) {
+                switch (gameConfig.getMapInfo().getInfo()[x][y]) {
+                    case GameConfig.MAP_TYPE_BRICK:
+                        canvas.drawBitmap(gameConfig.getBrick(), x * gameConfig.PER_WIDTH, y * gameConfig.PER_HEIGHT, null);
                         break;
-                    case GameConfig.TYPE_WALL:
-                        canvas.drawBitmap(gameConfig.wall, x * gameConfig.perWidth, y * gameConfig.perHeight, null);
+                    case GameConfig.MAP_TYPE_WALL:
+                        canvas.drawBitmap(gameConfig.getWall(), x * gameConfig.PER_WIDTH, y * gameConfig.PER_HEIGHT, null);
                         break;
-                    case GameConfig.TYPE_TEMP:
-                    case GameConfig.TYPE_FIRE:
-                    case GameConfig.TYPE_BACKGROUND:
-                        canvas.drawBitmap(gameConfig.background, x * gameConfig.perWidth, y * gameConfig.perHeight, null);
+                    case GameConfig.MAP_TYPE_TEMP:
+                    case GameConfig.MAP_TYPE_FIRE:
+                    case GameConfig.MAP_TYPE_BACKGROUND:
+                        canvas.drawBitmap(gameConfig.getBackground(), x * gameConfig.PER_WIDTH, y * gameConfig.PER_HEIGHT, null);
                         break;
                 }
             }
@@ -74,11 +90,7 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback, Bomb
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        if (gameConfig.mapInfo == null) {
-            renderMap();
-        } else {
-            renderMap();
-        }
+        renderMap();
     }
 
     @Override
@@ -86,54 +98,56 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback, Bomb
     }
 
     @Override
-    public void onFireOn(int x, int y, int upLength, int leftLength, int rightLength, int downLength) {
+    public void onFireOn(int x, int y, int upLength, int leftLength, int rightLength,
+                         int downLength) {
         for (int i = 0; i <= upLength; i++) {
-            gameConfig.mapInfo.getInfo()[x][y - i] = GameConfig.TYPE_FIRE;
-            if (gameConfig.mapInfo.isDoor(x, y - i)) {
-                gameConfig.getPropDoor().set(x, y - i);
-            } else if (gameConfig.mapInfo.isProp(x, y - i) && !gameConfig.propBomb.isEat()) {
-                gameConfig.getPropBomb().set(x, y - i);
+            gameConfig.getMapInfo().getInfo()[x][y - i] = GameConfig.MAP_TYPE_FIRE;
+            if (gameConfig.getMapInfo().isDoor(x, y - i)) {
+                gameConfig.getDoor().set(x, y - i);
+            } else if (gameConfig.getMapInfo().isProp(x, y - i) && !gameConfig.getProp().isEat()) {
+                gameConfig.getProp().set(x, y - i);
             }
         }
         for (int i = 0; i <= leftLength; i++) {
-            gameConfig.mapInfo.getInfo()[x - i][y] = GameConfig.TYPE_FIRE;
-            if (gameConfig.mapInfo.isDoor(x - i, y)) {
-                gameConfig.getPropDoor().set(x - i, y);
-            } else if (gameConfig.mapInfo.isProp(x - i, y) && !gameConfig.propBomb.isEat()) {
-                gameConfig.getPropBomb().set(x - i, y);
+            gameConfig.getMapInfo().getInfo()[x - i][y] = GameConfig.MAP_TYPE_FIRE;
+            if (gameConfig.getMapInfo().isDoor(x - i, y)) {
+                gameConfig.getDoor().set(x - i, y);
+            } else if (gameConfig.getMapInfo().isProp(x - i, y) && !gameConfig.getProp().isEat()) {
+                gameConfig.getProp().set(x - i, y);
             }
         }
         for (int i = 0; i <= rightLength; i++) {
-            gameConfig.mapInfo.getInfo()[x + i][y] = GameConfig.TYPE_FIRE;
-            if (gameConfig.mapInfo.isDoor(x + i, y)) {
-                gameConfig.getPropDoor().set(x + i, y);
-            } else if (gameConfig.mapInfo.isProp(x + i, y) && !gameConfig.propBomb.isEat()) {
-                gameConfig.getPropBomb().set(x + i, y);
+            gameConfig.getMapInfo().getInfo()[x + i][y] = GameConfig.MAP_TYPE_FIRE;
+            if (gameConfig.getMapInfo().isDoor(x + i, y)) {
+                gameConfig.getDoor().set(x + i, y);
+            } else if (gameConfig.getMapInfo().isProp(x + i, y) && !gameConfig.getProp().isEat()) {
+                gameConfig.getProp().set(x + i, y);
             }
         }
         for (int i = 0; i <= downLength; i++) {
-            gameConfig.mapInfo.getInfo()[x][y + i] = GameConfig.TYPE_FIRE;
-            if (gameConfig.mapInfo.isDoor(x, y + i)) {
-                gameConfig.getPropDoor().set(x, y + i);
-            } else if (gameConfig.mapInfo.isProp(x, y + i) && !gameConfig.propBomb.isEat()) {
-                gameConfig.getPropBomb().set(x, y + i);
+            gameConfig.getMapInfo().getInfo()[x][y + i] = GameConfig.MAP_TYPE_FIRE;
+            if (gameConfig.getMapInfo().isDoor(x, y + i)) {
+                gameConfig.getDoor().set(x, y + i);
+            } else if (gameConfig.getMapInfo().isProp(x, y + i) && !gameConfig.getProp().isEat()) {
+                gameConfig.getProp().set(x, y + i);
             }
         }
     }
 
     @Override
-    public void onFireOff(int x, int y, int upLength, int leftLength, int rightLength, int downLength) {
+    public void onFireOff(int x, int y, int upLength, int leftLength, int rightLength,
+                          int downLength) {
         for (int i = 0; i <= upLength; i++) {
-            gameConfig.mapInfo.getInfo()[x][y - i] = GameConfig.TYPE_BACKGROUND;
+            gameConfig.getMapInfo().getInfo()[x][y - i] = GameConfig.MAP_TYPE_BACKGROUND;
         }
         for (int i = 0; i <= leftLength; i++) {
-            gameConfig.mapInfo.getInfo()[x - i][y] = GameConfig.TYPE_BACKGROUND;
+            gameConfig.getMapInfo().getInfo()[x - i][y] = GameConfig.MAP_TYPE_BACKGROUND;
         }
         for (int i = 0; i <= rightLength; i++) {
-            gameConfig.mapInfo.getInfo()[x + i][y] = GameConfig.TYPE_BACKGROUND;
+            gameConfig.getMapInfo().getInfo()[x + i][y] = GameConfig.MAP_TYPE_BACKGROUND;
         }
         for (int i = 0; i <= downLength; i++) {
-            gameConfig.mapInfo.getInfo()[x][y + i] = GameConfig.TYPE_BACKGROUND;
+            gameConfig.getMapInfo().getInfo()[x][y + i] = GameConfig.MAP_TYPE_BACKGROUND;
         }
         renderMap();
     }

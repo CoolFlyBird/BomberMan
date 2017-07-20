@@ -5,17 +5,18 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
 import com.unual.bomberman.AppCache;
+import com.unual.bomberman.GameConfig;
 import com.unual.bomberman.R;
 
 /**
  * Created by unual on 2017/7/19.
  */
 
-public class PropDoor extends PropModel {
+public class Prop extends PropModel {
 
-    public PropDoor() {
-        icon = BitmapFactory.decodeResource(AppCache.getInstance().getContext().getResources(), R.drawable.game_view_prop_door);
+    public Prop(GameConfig gameConfig) {
+        super(gameConfig);
+        icon = BitmapFactory.decodeResource(AppCache.getInstance().getContext().getResources(), R.drawable.game_view_prop_bomb);
         icon = Bitmap.createScaledBitmap(icon, perWidth, perHeight, false);
     }
-
 }

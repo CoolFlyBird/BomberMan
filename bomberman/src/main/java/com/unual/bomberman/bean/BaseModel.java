@@ -3,7 +3,6 @@ package com.unual.bomberman.bean;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
-import com.unual.bomberman.AppCache;
 import com.unual.bomberman.GameConfig;
 
 /**
@@ -12,13 +11,15 @@ import com.unual.bomberman.GameConfig;
 
 public abstract class BaseModel {
     protected byte[][] mapInfo;
-    protected int perHeight = GameConfig.perHeight;
-    protected int perWidth = GameConfig.perWidth;
+    protected int perHeight;
+    protected int perWidth;
     protected Location location;
     protected Bitmap icon;
 
-    public BaseModel() {
-        mapInfo = AppCache.getInstance().getGameConfig().mapInfo.getInfo();
+    public BaseModel(GameConfig gameConfig) {
+        mapInfo = gameConfig.getMapInfo().getInfo();
+        perHeight = gameConfig.PER_HEIGHT;
+        perWidth = gameConfig.PER_WIDTH;
     }
 
     public abstract void draw(Canvas canvas);
