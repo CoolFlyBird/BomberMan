@@ -96,29 +96,29 @@ public class Bomb extends BaseModel {
     public void draw(Canvas canvas) {
         if (isPlaced) {
             if (boom) {
-                canvas.drawBitmap(center, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
+                canvas.drawBitmap(center, GameConfig.X_OFFSET + (location.x + location.xOffset) * perWidth, GameConfig.Y_OFFSET + (location.y + location.yOffset) * perHeight, null);
                 if (upLength != 0) {
                     for (int i = upLength; i > 0; i--) {
-                        canvas.drawBitmap(vertical, location.x * perWidth, (location.y - i) * perHeight, null);
+                        canvas.drawBitmap(vertical, GameConfig.X_OFFSET + location.x * perWidth, GameConfig.Y_OFFSET + (location.y - i) * perHeight, null);
                     }
                 }
                 if (leftLength != 0) {
                     for (int i = leftLength; i > 0; i--) {
-                        canvas.drawBitmap(horizon, (location.x - i) * perWidth, location.y * perHeight, null);
+                        canvas.drawBitmap(horizon, GameConfig.X_OFFSET + (location.x - i) * perWidth, GameConfig.Y_OFFSET + location.y * perHeight, null);
                     }
                 }
                 if (rightLength != 0) {
                     for (int i = rightLength; i > 0; i--) {
-                        canvas.drawBitmap(horizon, (location.x + i) * perWidth, location.y * perHeight, null);
+                        canvas.drawBitmap(horizon, GameConfig.X_OFFSET + (location.x + i) * perWidth, GameConfig.Y_OFFSET + location.y * perHeight, null);
                     }
                 }
                 if (downLength != 0) {
                     for (int i = downLength; i > 0; i--) {
-                        canvas.drawBitmap(vertical, location.x * perWidth, (location.y + i) * perHeight, null);
+                        canvas.drawBitmap(vertical, GameConfig.X_OFFSET + location.x * perWidth, GameConfig.Y_OFFSET + (location.y + i) * perHeight, null);
                     }
                 }
             } else {
-                canvas.drawBitmap(icon, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
+                canvas.drawBitmap(icon, GameConfig.X_OFFSET + (location.x + location.xOffset) * perWidth, GameConfig.Y_OFFSET + (location.y + location.yOffset) * perHeight, null);
             }
         } else {
 

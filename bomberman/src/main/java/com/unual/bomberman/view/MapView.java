@@ -2,6 +2,8 @@ package com.unual.bomberman.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -11,6 +13,7 @@ import android.widget.Toast;
 
 import com.unual.bomberman.AppCache;
 import com.unual.bomberman.GameConfig;
+import com.unual.bomberman.R;
 import com.unual.bomberman.bean.Bomb;
 
 /**
@@ -47,6 +50,7 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback, Bomb
         try {
             canvas = mHolder.lockCanvas();
             if (canvas != null) {
+                canvas.drawColor(getResources().getColor(R.color.game_info_bg));
                 drawMap(canvas);
             }
         } catch (Exception e) {
@@ -64,15 +68,15 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback, Bomb
             for (x = 0; x < gameConfig.WIDTH_SIZE; x++) {
                 switch (gameConfig.getMapInfo().getInfo()[x][y]) {
                     case GameConfig.MAP_TYPE_BRICK:
-                        canvas.drawBitmap(gameConfig.getBrick(), x * gameConfig.PER_WIDTH, y * gameConfig.PER_HEIGHT, null);
+                        canvas.drawBitmap(gameConfig.getBrick(), gameConfig.X_OFFSET + x * gameConfig.PER_WIDTH, gameConfig.Y_OFFSET + y * gameConfig.PER_HEIGHT, null);
                         break;
                     case GameConfig.MAP_TYPE_WALL:
-                        canvas.drawBitmap(gameConfig.getWall(), x * gameConfig.PER_WIDTH, y * gameConfig.PER_HEIGHT, null);
+                        canvas.drawBitmap(gameConfig.getWall(), gameConfig.X_OFFSET + x * gameConfig.PER_WIDTH, gameConfig.Y_OFFSET + y * gameConfig.PER_HEIGHT, null);
                         break;
                     case GameConfig.MAP_TYPE_TEMP:
                     case GameConfig.MAP_TYPE_FIRE:
                     case GameConfig.MAP_TYPE_BACKGROUND:
-                        canvas.drawBitmap(gameConfig.getBackground(), x * gameConfig.PER_WIDTH, y * gameConfig.PER_HEIGHT, null);
+                        canvas.drawBitmap(gameConfig.getBackground(), gameConfig.X_OFFSET + x * gameConfig.PER_WIDTH, gameConfig.Y_OFFSET + y * gameConfig.PER_HEIGHT, null);
                         break;
                 }
             }

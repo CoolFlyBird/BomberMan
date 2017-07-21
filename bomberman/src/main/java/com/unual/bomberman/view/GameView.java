@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
+import android.graphics.Rect;
 import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import com.unual.bomberman.AppCache;
 import com.unual.bomberman.GameConfig;
+import com.unual.bomberman.R;
 import com.unual.bomberman.bean.Bomb;
 import com.unual.bomberman.bean.Bomber;
 import com.unual.bomberman.bean.MoveModel;
@@ -33,6 +35,8 @@ import java.util.List;
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder mHolder;
     private Paint paint;
+    private Paint textPaint;
+    private Paint.FontMetricsInt fontMetrics;
     private float rx, ry;
     private int r = 250;
     private int padding = 100;
@@ -72,6 +76,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         paint.setStrokeWidth(3);
         paint.setColor(Color.RED);
         paint.setStyle(Paint.Style.STROKE);
+
+
+        textPaint = new Paint();
+        textPaint.setStrokeWidth(5);
+        textPaint.setTextSize(60);
+        textPaint.setStyle(Paint.Style.STROKE);
+        textPaint.setColor(Color.WHITE);
+        fontMetrics = textPaint.getFontMetricsInt();
 
         gameConfig = AppCache.getInstance().getGameConfig();
         bomber = gameConfig.getBomber();
@@ -227,6 +239,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 drawMan(canvas);
                 drawEnemy(canvas);
                 drawButton(canvas);
+                drawInfo(canvas);
             }
         } catch (Exception e) {
             Log.e("123", "gameview:" + e.getMessage());
@@ -242,6 +255,25 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         canvas.drawPoint(rx, ry, paint);
         canvas.drawCircle(arx, ary, ar, paint);
         canvas.drawPoint(arx, ary, paint);
+    }
+
+    private void drawInfo(Canvas canvas) {
+
+//        Rect left = new Rect(0, 0, gameConfig.MAP_WIDTH / 3, 150);
+//        Rect mid = new Rect(gameConfig.MAP_WIDTH / 3, 0, gameConfig.MAP_WIDTH * 2 / 3, 150);
+//        Rect right = new Rect(gameConfig.MAP_WIDTH * 2 / 3, 0, gameConfig.MAP_WIDTH, 150);
+        Rect left = new Rect(0, 0, 1920 / 3, 150);
+        Rect mid = new Rect(1920 / 3, 0, 1920 * 2 / 3, 150);
+        Rect right = new Rect(1920 * 2 / 3, 0, 1920, 150);
+        drawText(canvas, left, "TIME:199");
+        drawText(canvas, mid, "LEVEL:1");
+        drawText(canvas, right, "COUNT:6");
+    }
+
+    public void drawText(Canvas canvas, Rect targetRect, String text) {
+        int baseline = (targetRect.bottom + targetRect.top - fontMetrics.bottom - fontMetrics.top) / 2;
+        textPaint.setTextAlign(Paint.Align.CENTER);
+        canvas.drawText(text, targetRect.centerX(), baseline, textPaint);
     }
 
 

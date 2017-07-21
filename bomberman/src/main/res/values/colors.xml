@@ -5,4 +5,5 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="game_background">#31b514</color>
+    <color name="game_info_bg">#c5c5c5</color>
 </resources>

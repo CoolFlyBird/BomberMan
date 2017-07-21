@@ -212,15 +212,15 @@ public abstract class MoveModel extends BaseModel {
         if (checkDeath()) die();
         changeDirectionCheck();
         updateLocation();
-        canvas.drawBitmap(icon, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
+        canvas.drawBitmap(icon, GameConfig.X_OFFSET + (location.x + location.xOffset) * perWidth, GameConfig.Y_OFFSET + (location.y + location.yOffset) * perHeight, null);
         if (died_value >= GameConfig.MAP_FPS * 2 / 3 && died_value <= GameConfig.MAP_FPS * 2 * 2 / 3) {
-            canvas.drawBitmap(icon_x, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
+            canvas.drawBitmap(icon_x, GameConfig.X_OFFSET + (location.x + location.xOffset) * perWidth, GameConfig.Y_OFFSET + (location.y + location.yOffset) * perHeight, null);
         } else if (died_value >= GameConfig.MAP_FPS * 2 * 2 / 3 && died_value <= GameConfig.MAP_FPS * 2) {
-            canvas.drawBitmap(icon_xx, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
+            canvas.drawBitmap(icon_xx, GameConfig.X_OFFSET + (location.x + location.xOffset) * perWidth, GameConfig.Y_OFFSET + (location.y + location.yOffset) * perHeight, null);
         } else if (died_value >= GameConfig.MAP_FPS * 2 && died_value <= GameConfig.MAP_FPS * 2 * 4 / 3) {
-            canvas.drawBitmap(icon_xxx, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
+            canvas.drawBitmap(icon_xxx, GameConfig.X_OFFSET + (location.x + location.xOffset) * perWidth, GameConfig.Y_OFFSET + (location.y + location.yOffset) * perHeight, null);
         } else if (died_value >= GameConfig.MAP_FPS * 2 * 4 / 3) {
-            canvas.drawBitmap(icon_xxx, (location.x + location.xOffset) * perWidth, (location.y + location.yOffset) * perHeight, null);
+            canvas.drawBitmap(icon_xxx, GameConfig.X_OFFSET + (location.x + location.xOffset) * perWidth, GameConfig.Y_OFFSET + (location.y + location.yOffset) * perHeight, null);
             removed = true;
         }
     }

@@ -22,8 +22,14 @@ import java.util.Random;
  */
 
 public class GameConfig {
+    //    public static int HEIGHT_SIZE = 13;
+//    public static int WIDTH_SIZE = 21;
+    public static int X_OFFSET = 300;
+    public static int Y_OFFSET = 200;
+
     public static int HEIGHT_SIZE = 13;
-    public static int WIDTH_SIZE = 21;
+    public static int WIDTH_SIZE = 25;
+
     public static int MAP_FPS = 30;
     public static final byte MAP_TYPE_BACKGROUND = 0;
     public static final byte MAP_TYPE_TEMP = 1;
@@ -46,9 +52,11 @@ public class GameConfig {
     public static int PER_WIDTH;
     public static int PER_HEIGHT;
 
+    private Bitmap infoBg;
     private Bitmap background;
     private Bitmap brick;
     private Bitmap wall;
+
     private MapInfo mapInfo;
     private int propType;
     private int percent;
@@ -80,11 +88,14 @@ public class GameConfig {
          */
         brick = BitmapFactory.decodeResource(AppCache.getInstance().getContext().getResources(), R.drawable.game_view_brick);
         wall = BitmapFactory.decodeResource(AppCache.getInstance().getContext().getResources(), R.drawable.game_view_wall);
+        infoBg = Bitmap.createBitmap(PER_WIDTH, PER_HEIGHT, Bitmap.Config.ARGB_8888);
         background = Bitmap.createBitmap(PER_WIDTH, PER_HEIGHT, Bitmap.Config.ARGB_8888);
         brick = Bitmap.createScaledBitmap(brick, PER_WIDTH, PER_HEIGHT, false);
         wall = Bitmap.createScaledBitmap(wall, PER_WIDTH, PER_HEIGHT, false);
         Canvas canvas = new Canvas(background);
         canvas.drawColor(AppCache.getInstance().getContext().getResources().getColor(R.color.game_background));
+        canvas = new Canvas(infoBg);
+        canvas.drawColor(AppCache.getInstance().getContext().getResources().getColor(R.color.game_info_bg));
 
         /**
          * map info
@@ -102,6 +113,10 @@ public class GameConfig {
         prop = new Prop(this);
         bomber = new Bomber(this, bombs);
         setEmys();
+    }
+
+    public Bitmap getInfoBackground() {
+        return infoBg;
     }
 
     public Bitmap getBackground() {
