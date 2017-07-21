@@ -3,6 +3,7 @@ package com.unual.bomberman;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.util.Log;
 
 import com.unual.bomberman.bean.Bomb;
 import com.unual.bomberman.bean.Bomber;
@@ -49,11 +50,6 @@ public class GameConfig {
     private Bitmap brick;
     private Bitmap wall;
     private MapInfo mapInfo;
-    private int mapLevel;
-    private int emyCount;
-    private int bombCount;
-    private int bombLength;
-    private int bomberSpeed;
     private int propType;
     private int percent;
     private List<MoveModel> emys;
@@ -61,6 +57,11 @@ public class GameConfig {
     private Bomber bomber;
     private PropModel door;
     private PropModel prop;
+    private int mapLevel;
+    private int emyCount;
+    private int bombCount;
+    private int bombLength;
+    private int bomberSpeed;
 
 
     public GameConfig(int width, int height) {
@@ -163,6 +164,8 @@ public class GameConfig {
         mapLevel = 1;
         bombCount = 1;
         bomber.reset();
+        door.reset();
+        prop.reset();
         Bomb.resetLength();
         setMapLevel(mapLevel);
         generateMapInfo();
@@ -170,10 +173,30 @@ public class GameConfig {
     }
 
     public void nextLevel() {
+        bomber.reset();
+        door.reset();
+        prop.reset();
         mapLevel++;
         setMapLevel(mapLevel);
         generateMapInfo();
         setEmys();
+    }
+
+    public void setBombCount(int bombCount) {
+        this.bombCount = bombCount;
+    }
+
+    public void setBombLength(int bombLength) {
+        this.bombLength = bombLength;
+        Bomb.setBombLength(bombLength);
+    }
+
+    public void setBomberSpeed(int bomberSpeed) {
+        this.bomberSpeed = bomberSpeed;
+    }
+
+    public void setLevel(int level) {
+        this.mapLevel = level;
     }
 
     private void setMapLevel(int level) {
@@ -247,6 +270,7 @@ public class GameConfig {
 
         public MapInfo(int width, int height) {
             random = new Random();
+            info = new byte[width][height];
             this.width = width;
             this.height = height;
         }
@@ -256,8 +280,7 @@ public class GameConfig {
         }
 
         public void generateMap() {
-            info = new byte[width][height];
-            int x, y, a, c, d;
+            int x, y, a;
             for (y = 0; y < height; y++) {
                 for (x = 0; x < width; x++) {
                     if (x == 0 || y == 0 || x == width - 1 || y == height - 1) {
@@ -279,8 +302,8 @@ public class GameConfig {
             info[1][2] = GameConfig.MAP_TYPE_BACKGROUND;
 
             while (true) {
-                x = AppCache.getInstance().getRandom().nextInt(WIDTH_SIZE - 2) + 1;
-                y = AppCache.getInstance().getRandom().nextInt(HEIGHT_SIZE - 2) + 1;
+                x = random.nextInt(WIDTH_SIZE - 2) + 1;
+                y = random.nextInt(HEIGHT_SIZE - 2) + 1;
                 if (!(x == 1 && y == 1) && !(x == 2 && y == 1) && !(x == 1 && y == 2) && !(x % 2 == 0 && y % 2 == 0)) {
                     info[x][y] = GameConfig.MAP_TYPE_WALL;
                     props_x1 = x;
@@ -290,8 +313,8 @@ public class GameConfig {
             }
 
             while (true) {
-                x = AppCache.getInstance().getRandom().nextInt(WIDTH_SIZE - 2) + 1;
-                y = AppCache.getInstance().getRandom().nextInt(HEIGHT_SIZE - 2) + 1;
+                x = random.nextInt(WIDTH_SIZE - 2) + 1;
+                y = random.nextInt(HEIGHT_SIZE - 2) + 1;
                 if (!(x == 1 && y == 1) && !(x == 2 && y == 1) && !(x == 1 && y == 2)
                         && !(x == props_x1 && y == props_y1) && !(x % 2 == 0 && y % 2 == 0)) {
                     info[x][y] = GameConfig.MAP_TYPE_WALL;
@@ -300,6 +323,8 @@ public class GameConfig {
                     break;
                 }
             }
+            Log.e("123", props_x1 + "," + props_y1);
+            Log.e("123", props_x2 + "," + props_y2);
         }
 
         public boolean isDoor(int x, int y) {

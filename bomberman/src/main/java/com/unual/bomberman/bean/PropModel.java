@@ -25,6 +25,11 @@ public abstract class PropModel extends BaseModel {
         isShow = true;
     }
 
+    public void reset() {
+        isShow = false;
+        eat = false;
+    }
+
     public boolean isEat() {
         return eat;
     }

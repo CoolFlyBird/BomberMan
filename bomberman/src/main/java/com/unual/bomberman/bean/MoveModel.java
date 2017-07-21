@@ -21,7 +21,7 @@ public abstract class MoveModel extends BaseModel {
     protected int level;
     protected boolean death;
     protected int died_value;
-    private boolean removed;
+    protected boolean removed;
     private Bitmap icon_x;
     private Bitmap icon_xx;
     private Bitmap icon_xxx;
@@ -40,16 +40,12 @@ public abstract class MoveModel extends BaseModel {
 
     public abstract boolean meetWith(BaseModel model);
 
-    public boolean isRemoved() {
-        return removed;
+    public void setRemoved(boolean removed) {
+        this.removed = removed;
     }
 
-    public void reset() {
-        died_value = 0;
-        speed_value = (float) (1.0 / LEVEL[level]);
-        removed = false;
-        death = false;
-        initLocation();
+    public boolean isRemoved() {
+        return removed;
     }
 
     public void die() {

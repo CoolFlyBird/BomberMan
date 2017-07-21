@@ -18,7 +18,6 @@ import com.unual.bomberman.AppCache;
 import com.unual.bomberman.GameConfig;
 import com.unual.bomberman.bean.Bomb;
 import com.unual.bomberman.bean.Bomber;
-import com.unual.bomberman.bean.EmyBall;
 import com.unual.bomberman.bean.MoveModel;
 import com.unual.bomberman.bean.PropModel;
 import com.unual.bomberman.interfaces.ChapterCallback;
@@ -26,7 +25,6 @@ import com.unual.bomberman.interfaces.IControl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TimerTask;
 
 /**
  * Created by unual on 2017/7/6.
@@ -43,7 +41,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private int apadding = 200;
     private boolean onPause;
     private long timePerFrame;
-    List<MoveModel> remove = new ArrayList<>();
+    List<MoveModel> removes = new ArrayList<>();
     private Bomber bomber;
     private List<MoveModel> emys;
     private List<Bomb> bombs;
@@ -187,6 +185,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
+    public void stopRender() {
+        onPause = true;
+    }
+
     public void startRender() {
         onPause = false;
         if (Looper.getMainLooper() != Looper.myLooper()) {
@@ -244,22 +246,22 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
 
     private void drawMan(Canvas canvas) {
-        if (bomber.isSkip()) return;
         if (bomber.isRemoved()) {
             post(new Runnable() {
                 @Override
                 public void run() {
                     Toast.makeText(getContext(), "游戏结束", Toast.LENGTH_SHORT).show();
+                    Log.e("123", "游戏结束");
                     onPause = true;
+                    bomber.reset();
                 }
             });
-            bomber.setSkip(true);
             postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     chapterCallback.reStartGame();
                 }
-            }, 3000);
+            }, 2000);
         } else {
             bomber.draw(canvas);
         }
@@ -267,13 +269,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             Bomb.increaseLength();
             prop.setEat(true);
         }
-        if (bomber.isSkipPass()) return;
         if (door.isShow() && emys.size() == 0 && bomber.meetWith(door)) {
             post(new Runnable() {
                 @Override
                 public void run() {
                     Toast.makeText(getContext(), "恭喜过关", Toast.LENGTH_SHORT).show();
+                    Log.e("123", "恭喜过关");
                     onPause = true;
+                    bomber.reset();
                 }
             });
             postDelayed(new Runnable() {
@@ -281,22 +284,21 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 public void run() {
                     chapterCallback.nextChapter();
                 }
-            }, 3000);
-            bomber.setSkipPass(true);
+            }, 2000);
         }
     }
 
     private void drawEnemy(Canvas canvas) {
         for (MoveModel emy : emys) {
             if (emy.isRemoved()) {
-                remove.add(emy);
+                removes.add(emy);
             } else {
                 emy.draw(canvas);
             }
         }
-        if (remove.size() != 0) {
-            emys.removeAll(remove);
-            remove.clear();
+        if (removes.size() != 0) {
+            emys.removeAll(removes);
+            removes.clear();
         }
         for (MoveModel emy : emys) {
             if (bomber.meetWith(emy)) {

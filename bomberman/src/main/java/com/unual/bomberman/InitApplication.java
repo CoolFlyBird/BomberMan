@@ -13,6 +13,7 @@ public class InitApplication extends Application {
         super.onCreate();
         AppCache.getInstance().setContext(this);
         AppCache.getInstance().setGameConfig(new GameConfig(1920, 1080));
+        AppSharedPreferences.getInstance().loadConfig(AppCache.getInstance().getGameConfig());
     }
 
     @Override
@@ -20,6 +21,7 @@ public class InitApplication extends Application {
         super.onConfigurationChanged(newConfig);
         if (AppCache.getInstance().getGameConfig() == null) {
             AppCache.getInstance().setGameConfig(new GameConfig(1920, 1080));
+            AppSharedPreferences.getInstance().loadConfig(AppCache.getInstance().getGameConfig());
         }
     }
 }

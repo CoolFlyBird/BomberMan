@@ -32,7 +32,7 @@ public class EmyBall extends MoveModel {
     public void initLocation() {
         int x = AppCache.getInstance().getRandom().nextInt(GameConfig.WIDTH_SIZE - 2) + 1;
         int y = AppCache.getInstance().getRandom().nextInt(GameConfig.HEIGHT_SIZE - 2) + 1;
-        if (mapInfo[x][y] != GameConfig.MAP_TYPE_BACKGROUND) {
+        if ((x <= 3 && y <= 3) || mapInfo[x][y] != GameConfig.MAP_TYPE_BACKGROUND) {
             initLocation();
         } else {
             location.x = x;
@@ -61,16 +61,13 @@ public class EmyBall extends MoveModel {
         }
     }
 
-    private void setRandomDirection() {
-        nextDirection = AppCache.getInstance().getRandom().nextInt(4) + 1;
-    }
-
     @Override
     public boolean meetWith(BaseModel model) {
-        if (model instanceof EmyBall) {
-
-        }
         return false;
+    }
+
+    private void setRandomDirection() {
+        nextDirection = AppCache.getInstance().getRandom().nextInt(4) + 1;
     }
 
     @Override

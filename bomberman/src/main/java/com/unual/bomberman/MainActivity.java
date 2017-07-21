@@ -2,9 +2,12 @@ package com.unual.bomberman;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.Toast;
 
+import com.unual.bomberman.bean.Bomb;
 import com.unual.bomberman.interfaces.ChapterCallback;
 import com.unual.bomberman.view.GameView;
 import com.unual.bomberman.view.MapView;
@@ -23,7 +26,8 @@ public class MainActivity extends Activity implements ChapterCallback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        if (AppCache.getInstance().getGameConfig() == null) finish();
+        Toast.makeText(getBaseContext(), "level " + AppCache.getInstance().getGameConfig().getMapLevel(), Toast.LENGTH_SHORT).show();
+        Log.e("123", "level:" + AppCache.getInstance().getGameConfig().getMapLevel() + ",length:" + Bomb.getBombLength() + ",count:" + AppCache.getInstance().getGameConfig().getBombCount());
         setContentView(R.layout.activity_main);
         mapview = (MapView) findViewById(R.id.mapview);
         gameview = (GameView) findViewById(R.id.gameview);
@@ -36,6 +40,7 @@ public class MainActivity extends Activity implements ChapterCallback {
     protected void onResume() {
         super.onResume();
         getWindow().getDecorView().setSystemUiVisibility(FLAG);
+        mapview.renderMap();
     }
 
     @Override
@@ -45,16 +50,32 @@ public class MainActivity extends Activity implements ChapterCallback {
 
     @Override
     public void reStartGame() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getBaseContext(), "level " + AppCache.getInstance().getGameConfig().getMapLevel(), Toast.LENGTH_SHORT).show();
+            }
+        });
         AppCache.getInstance().getGameConfig().reStart();
         mapview.renderMap();
         gameview.startRender();
+        AppSharedPreferences.getInstance().cleanGameConfig();
+        Log.e("123", "level:" + AppCache.getInstance().getGameConfig().getMapLevel() + ",length:" + Bomb.getBombLength() + ",count:" + AppCache.getInstance().getGameConfig().getBombCount());
     }
 
     @Override
     public void nextChapter() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getBaseContext(), "level " + AppCache.getInstance().getGameConfig().getMapLevel(), Toast.LENGTH_SHORT).show();
+            }
+        });
         AppCache.getInstance().getGameConfig().nextLevel();
         mapview.renderMap();
         gameview.startRender();
+        AppSharedPreferences.getInstance().setGameConfig(AppCache.getInstance().getGameConfig());
+        Log.e("123", "level:" + AppCache.getInstance().getGameConfig().getMapLevel() + ",length:" + Bomb.getBombLength() + ",count:" + AppCache.getInstance().getGameConfig().getBombCount());
     }
 
 }

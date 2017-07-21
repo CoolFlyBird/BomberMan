@@ -17,8 +17,6 @@ import java.util.List;
 public class Bomber extends MoveModel implements IControl {
     private boolean nextBomb;
     private List<Bomb> bombs;
-    protected boolean skip;
-    protected boolean skipPass;
 
 
     public Bomber(GameConfig gameConfig, List<Bomb> bombs) {
@@ -34,31 +32,19 @@ public class Bomber extends MoveModel implements IControl {
     }
 
     public void reset() {
-        super.reset();
+        speed_value = (float) (1.0 / LEVEL[level]);
+        died_value = 0;
+        removed = false;
+        death = false;
         nextDirection = DIRECTION_NONE;
         nextBomb = false;
-        skip = false;
-        skipPass = false;
-    }
-
-    public boolean isSkip() {
-        return skip;
-    }
-
-    public void setSkip(boolean skip) {
-        this.skip = skip;
-    }
-
-    public boolean isSkipPass() {
-        return skipPass;
-    }
-
-    public void setSkipPass(boolean skipPass) {
-        this.skipPass = skipPass;
+        initLocation();
     }
 
     @Override
     public void initLocation() {
+        location.xOffset = 0.0f;
+        location.yOffset = 0.0f;
         location.x = 1;
         location.y = 1;
     }
@@ -67,6 +53,15 @@ public class Bomber extends MoveModel implements IControl {
         level++;
         if (level < LEVEL.length)
             speed_value = (float) (1.0 / LEVEL[level]);
+    }
+
+    public void setSpeedLevel(int level) {
+        this.level = level;
+        speed_value = (float) (1.0 / LEVEL[level]);
+    }
+
+    public int getSpeedLevel() {
+        return level;
     }
 
     @Override
@@ -111,6 +106,9 @@ public class Bomber extends MoveModel implements IControl {
 
     @Override
     public boolean meetWith(BaseModel model) {
+        if (model instanceof Door) {
+            return (location.x == model.location.x) && (location.y == model.location.y);
+        }
         return location.meetWith(model.location);
     }
 }

@@ -36,18 +36,13 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback, Bomb
         mHolder.setFormat(PixelFormat.TRANSPARENT);
         mHolder.addCallback(this);
         gameConfig = AppCache.getInstance().getGameConfig();
+        gameConfig.getBombs().clear();
         for (int i = 0; i < gameConfig.getBombCount(); i++) {
             gameConfig.getBombs().add(new Bomb(gameConfig, this));
         }
     }
 
     public void renderMap() {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getContext(), "level " + gameConfig.getMapLevel(), Toast.LENGTH_SHORT).show();
-            }
-        });
         Canvas canvas = null;
         try {
             canvas = mHolder.lockCanvas();

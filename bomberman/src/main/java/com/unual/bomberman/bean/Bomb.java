@@ -17,7 +17,7 @@ import java.util.TimerTask;
 public class Bomb extends BaseModel {
     private static final int BOMB_TIME = 3000;
     private static final int BOOM_TIME = 1000;
-    private static int bombLength = 1;
+    private static int BOMB_LENGTH = 1;
     private boolean calcul;
     private boolean isPlaced;
     private boolean boom;
@@ -42,12 +42,20 @@ public class Bomb extends BaseModel {
         center = Bitmap.createScaledBitmap(center, perWidth, perHeight, false);
     }
 
+    public static int getBombLength() {
+        return BOMB_LENGTH;
+    }
+
+    public static void setBombLength(int length) {
+        BOMB_LENGTH = length;
+    }
+
     public static void resetLength() {
-        bombLength = 1;
+        BOMB_LENGTH = 1;
     }
 
     public static void increaseLength() {
-        bombLength++;
+        BOMB_LENGTH++;
     }
 
     public boolean isPlaced() {
@@ -171,7 +179,7 @@ public class Bomb extends BaseModel {
     private int boomUpLength() {
         if (calcul) {
             int l = 0;
-            for (int i = 0; i < bombLength; i++) {
+            for (int i = 0; i < BOMB_LENGTH; i++) {
                 if (canUp(location.x, location.y - i)) {
                     if (!isBackGround(location.x, location.y - i)) break;
                     l = i + 1;
@@ -187,7 +195,7 @@ public class Bomb extends BaseModel {
     private int boomDownLength() {
         if (calcul) {
             int l = 0;
-            for (int i = 0; i < bombLength; i++) {
+            for (int i = 0; i < BOMB_LENGTH; i++) {
                 if (canDown(location.x, location.y + i)) {
                     if (!isBackGround(location.x, location.y + i)) break;
                     l = i + 1;
@@ -204,7 +212,7 @@ public class Bomb extends BaseModel {
     private int boomLeftLength() {
         if (calcul) {
             int l = 0;
-            for (int i = 0; i < bombLength; i++) {
+            for (int i = 0; i < BOMB_LENGTH; i++) {
                 if (canLeft(location.x - i, location.y)) {
                     if (!isBackGround(location.x - i, location.y)) break;
                     l = i + 1;
@@ -221,7 +229,7 @@ public class Bomb extends BaseModel {
     private int boomRightLength() {
         if (calcul) {
             int l = 0;
-            for (int i = 0; i < bombLength; i++) {
+            for (int i = 0; i < BOMB_LENGTH; i++) {
                 if (canRight(location.x + i, location.y)) {
                     if (!isBackGround(location.x + i, location.y)) break;
                     l = i + 1;
