@@ -22,8 +22,8 @@ import java.util.Random;
  */
 
 public class GameConfig {
-    //    public static int HEIGHT_SIZE = 13;
-//    public static int WIDTH_SIZE = 21;
+    public static int HEIGHT_SIZE = 13;
+    public static int WIDTH_SIZE = 29;
 
     public static int X_MARGIN = 300;
     public static int Y_MARGIN = 200;
@@ -37,8 +37,6 @@ public class GameConfig {
     public static int MAP_WIDTH = 2420;
     public static int MAP_HEIGHT = 1040;
 
-    public static int HEIGHT_SIZE = 13;
-    public static int WIDTH_SIZE = 29;
 
     public static int MAP_FPS = 30;
     public static final byte MAP_TYPE_BACKGROUND = 0;
