@@ -262,9 +262,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 //        Rect left = new Rect(0, 0, gameConfig.MAP_WIDTH / 3, 150);
 //        Rect mid = new Rect(gameConfig.MAP_WIDTH / 3, 0, gameConfig.MAP_WIDTH * 2 / 3, 150);
 //        Rect right = new Rect(gameConfig.MAP_WIDTH * 2 / 3, 0, gameConfig.MAP_WIDTH, 150);
-        Rect left = new Rect(0, 0, 1920 / 3, 150);
-        Rect mid = new Rect(1920 / 3, 0, 1920 * 2 / 3, 150);
-        Rect right = new Rect(1920 * 2 / 3, 0, 1920, 150);
+        Rect left = new Rect(0, 0, GameConfig.SCREEN_WIDTH / 3, 150);
+        Rect mid = new Rect(GameConfig.SCREEN_WIDTH / 3, 0, GameConfig.SCREEN_WIDTH * 2 / 3, 150);
+        Rect right = new Rect(GameConfig.SCREEN_WIDTH * 2 / 3, 0, GameConfig.SCREEN_WIDTH, 150);
         drawText(canvas, left, "TIME:199");
         drawText(canvas, mid, "LEVEL:1");
         drawText(canvas, right, "COUNT:6");

@@ -8,14 +8,12 @@ import android.content.res.Configuration;
  */
 
 public class InitApplication extends Application {
-    private int width = 2420;
-    private int height = 980;
 
     @Override
     public void onCreate() {
         super.onCreate();
         AppCache.getInstance().setContext(this);
-        AppCache.getInstance().setGameConfig(new GameConfig(width, height));
+        AppCache.getInstance().setGameConfig(new GameConfig());
         AppSharedPreferences.getInstance().loadConfig(AppCache.getInstance().getGameConfig());
     }
 
@@ -23,7 +21,7 @@ public class InitApplication extends Application {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (AppCache.getInstance().getGameConfig() == null) {
-            AppCache.getInstance().setGameConfig(new GameConfig(width, height));
+            AppCache.getInstance().setGameConfig(new GameConfig());
             AppSharedPreferences.getInstance().loadConfig(AppCache.getInstance().getGameConfig());
         }
     }
