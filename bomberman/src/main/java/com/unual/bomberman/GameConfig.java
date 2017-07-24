@@ -21,9 +21,12 @@ import java.util.Random;
  * Created by unual on 2017/7/20.
  */
 
+/**
+ * a
+ */
 public class GameConfig {
     public static int HEIGHT_SIZE = 13;
-    public static int WIDTH_SIZE = 29;
+    public static int WIDTH_SIZE = 21;
 
     public static int X_MARGIN = 300;
     public static int Y_MARGIN = 200;
@@ -31,14 +34,14 @@ public class GameConfig {
     public static int X_OFFSET = X_MARGIN;
     public static int Y_OFFSET = Y_MARGIN;
 
-    public static int SCREEN_WIDTH = 1920;
-    public static int SCREEN_HEIGHT = 1080;
+    public static int SCREEN_WIDTH;
+    public static int SCREEN_HEIGHT;
 
-    public static int MAP_WIDTH = 2420;
-    public static int MAP_HEIGHT = 1040;
+    public static int PER_WIDTH = 100;
+    public static int PER_HEIGHT = 100;
 
 
-    public static int MAP_FPS = 25;
+    public static int MAP_FPS = 40;
     public static final byte MAP_TYPE_BACKGROUND = 0;
     public static final byte MAP_TYPE_TEMP = 1;
     public static final byte MAP_TYPE_FIRE = 2;
@@ -54,9 +57,6 @@ public class GameConfig {
     public static final byte WALL_PERCENT_25 = 4;
     public static final byte WALL_PERCENT_33 = 3;
     public static final byte WALL_PERCENT_50 = 2;
-
-    public static int PER_WIDTH;
-    public static int PER_HEIGHT;
 
     private Bitmap infoBg;
     private Bitmap background;
@@ -84,8 +84,8 @@ public class GameConfig {
          */
         mapLevel = 1;
         bombCount = 1;
-        PER_WIDTH = MAP_WIDTH / WIDTH_SIZE;
-        PER_HEIGHT = MAP_HEIGHT / HEIGHT_SIZE;
+//        PER_WIDTH = MAP_WIDTH / WIDTH_SIZE;
+//        PER_HEIGHT = MAP_HEIGHT / HEIGHT_SIZE;
 
         /**
          * map icon

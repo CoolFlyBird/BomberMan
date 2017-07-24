@@ -49,6 +49,11 @@ public class MainActivity extends Activity implements ChapterCallback {
     }
 
     @Override
+    public void renderMap() {
+        mapview.renderMap();
+    }
+
+    @Override
     public void reStartGame() {
         runOnUiThread(new Runnable() {
             @Override

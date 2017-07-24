@@ -5,6 +5,8 @@ package com.unual.bomberman.interfaces;
  */
 
 public interface ChapterCallback {
+    void renderMap();
+
     void reStartGame();
 
     void nextChapter();

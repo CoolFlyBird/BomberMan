@@ -63,24 +63,53 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback, Bomb
     }
 
     private void drawMap(Canvas canvas) {
-        int x, y;
+        int x, y, i = 0;
+//        for (y = 0; y < gameConfig.HEIGHT_SIZE; y++) {
+//            for (x = 0; x < gameConfig.WIDTH_SIZE; x++) {
+//                switch (gameConfig.getMapInfo().getInfo()[x][y]) {
+//                    case GameConfig.MAP_TYPE_BRICK:
+//                        canvas.drawBitmap(gameConfig.getBrick(), gameConfig.X_OFFSET + x * gameConfig.PER_WIDTH, gameConfig.Y_OFFSET + y * gameConfig.PER_HEIGHT, null);
+//                        break;
+//                    case GameConfig.MAP_TYPE_WALL:
+//                        canvas.drawBitmap(gameConfig.getWall(), gameConfig.X_OFFSET + x * gameConfig.PER_WIDTH, gameConfig.Y_OFFSET + y * gameConfig.PER_HEIGHT, null);
+//                        break;
+//                    case GameConfig.MAP_TYPE_TEMP:
+//                    case GameConfig.MAP_TYPE_FIRE:
+//                    case GameConfig.MAP_TYPE_BACKGROUND:
+//                        canvas.drawBitmap(gameConfig.getBackground(), gameConfig.X_OFFSET + x * gameConfig.PER_WIDTH, gameConfig.Y_OFFSET + y * gameConfig.PER_HEIGHT, null);
+//                        break;
+//                }
+//            }
+//        }
         for (y = 0; y < gameConfig.HEIGHT_SIZE; y++) {
             for (x = 0; x < gameConfig.WIDTH_SIZE; x++) {
+                if (gameConfig.X_OFFSET + (x + 1) * gameConfig.PER_WIDTH < 0)
+                    continue;
+                else if (gameConfig.Y_OFFSET + (y + 1) * gameConfig.PER_HEIGHT < 0)
+                    continue;
+                else if (gameConfig.X_OFFSET + x * gameConfig.PER_WIDTH > gameConfig.SCREEN_WIDTH)
+                    continue;
+                else if (gameConfig.Y_OFFSET + y * gameConfig.PER_HEIGHT > gameConfig.SCREEN_HEIGHT)
+                    continue;
                 switch (gameConfig.getMapInfo().getInfo()[x][y]) {
                     case GameConfig.MAP_TYPE_BRICK:
+                        i++;
                         canvas.drawBitmap(gameConfig.getBrick(), gameConfig.X_OFFSET + x * gameConfig.PER_WIDTH, gameConfig.Y_OFFSET + y * gameConfig.PER_HEIGHT, null);
                         break;
                     case GameConfig.MAP_TYPE_WALL:
+                        i++;
                         canvas.drawBitmap(gameConfig.getWall(), gameConfig.X_OFFSET + x * gameConfig.PER_WIDTH, gameConfig.Y_OFFSET + y * gameConfig.PER_HEIGHT, null);
                         break;
                     case GameConfig.MAP_TYPE_TEMP:
                     case GameConfig.MAP_TYPE_FIRE:
                     case GameConfig.MAP_TYPE_BACKGROUND:
+                        i++;
                         canvas.drawBitmap(gameConfig.getBackground(), gameConfig.X_OFFSET + x * gameConfig.PER_WIDTH, gameConfig.Y_OFFSET + y * gameConfig.PER_HEIGHT, null);
                         break;
                 }
             }
         }
+        Log.e("123", "i:" + i);
     }
 
     @Override

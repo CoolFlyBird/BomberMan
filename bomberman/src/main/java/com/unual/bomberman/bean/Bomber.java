@@ -17,6 +17,7 @@ import java.util.List;
 public class Bomber extends MoveModel implements IControl {
     private boolean nextBomb;
     private List<Bomb> bombs;
+    private boolean mapMoved;
 
 
     public Bomber(GameConfig gameConfig, List<Bomb> bombs) {
@@ -47,6 +48,28 @@ public class Bomber extends MoveModel implements IControl {
         location.yOffset = 0.0f;
         location.x = 1;
         location.y = 1;
+    }
+
+    public boolean isMapMoved() {
+        return mapMoved;
+    }
+
+    @Override
+    protected void updateLocation() {
+        location.xOffset += speed.xSpeed;
+        location.yOffset += speed.ySpeed;
+        location.update();
+        if (location.x > 5 && location.x < 24) {
+            GameConfig.X_OFFSET -= speed.xSpeed * perWidth;
+            GameConfig.Y_OFFSET -= speed.ySpeed * perHeight;
+            mapMoved = true;
+        } else if (location.y > 4 && location.y < 9) {
+            GameConfig.X_OFFSET -= speed.xSpeed * perWidth;
+            GameConfig.Y_OFFSET -= speed.ySpeed * perHeight;
+            mapMoved = true;
+        } else {
+            mapMoved = false;
+        }
     }
 
     public void increaseSpeed() {

@@ -233,6 +233,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             if (canvas != null) {
                 canvas.drawColor(Color.WHITE);
                 canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.SRC);
+                if (bomber.isMapMoved()) chapterCallback.renderMap();
                 drawBomb(canvas);
                 prop.draw(canvas);
                 door.draw(canvas);
@@ -258,10 +259,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void drawInfo(Canvas canvas) {
-
-//        Rect left = new Rect(0, 0, gameConfig.MAP_WIDTH / 3, 150);
-//        Rect mid = new Rect(gameConfig.MAP_WIDTH / 3, 0, gameConfig.MAP_WIDTH * 2 / 3, 150);
-//        Rect right = new Rect(gameConfig.MAP_WIDTH * 2 / 3, 0, gameConfig.MAP_WIDTH, 150);
         Rect left = new Rect(0, 0, GameConfig.SCREEN_WIDTH / 3, 150);
         Rect mid = new Rect(GameConfig.SCREEN_WIDTH / 3, 0, GameConfig.SCREEN_WIDTH * 2 / 3, 150);
         Rect right = new Rect(GameConfig.SCREEN_WIDTH * 2 / 3, 0, GameConfig.SCREEN_WIDTH, 150);
@@ -354,6 +351,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        GameConfig.SCREEN_WIDTH = width;
+        GameConfig.SCREEN_HEIGHT = height;
         timePerFrame = 1000 / gameConfig.MAP_FPS;
         rx = r + padding;
         ry = height - r - padding;
