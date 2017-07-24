@@ -38,7 +38,7 @@ public class GameConfig {
     public static int MAP_HEIGHT = 1040;
 
 
-    public static int MAP_FPS = 30;
+    public static int MAP_FPS = 25;
     public static final byte MAP_TYPE_BACKGROUND = 0;
     public static final byte MAP_TYPE_TEMP = 1;
     public static final byte MAP_TYPE_FIRE = 2;
