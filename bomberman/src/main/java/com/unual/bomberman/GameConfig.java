@@ -9,9 +9,11 @@ import com.unual.bomberman.bean.Bomb;
 import com.unual.bomberman.bean.Bomber;
 import com.unual.bomberman.bean.EmyBall;
 import com.unual.bomberman.bean.MoveModel;
-import com.unual.bomberman.bean.Prop;
+import com.unual.bomberman.bean.PropCount;
 import com.unual.bomberman.bean.Door;
+import com.unual.bomberman.bean.PropLength;
 import com.unual.bomberman.bean.PropModel;
+import com.unual.bomberman.bean.PropSpeed;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,22 +28,24 @@ import java.util.Random;
  */
 public class GameConfig {
     public static int HEIGHT_SIZE = 13;
-    public static int WIDTH_SIZE = 21;
+    public static int WIDTH_SIZE = 29;
 
-    public static int X_MARGIN = 300;
-    public static int Y_MARGIN = 200;
+    public static int X_MARGIN = 600;
+    public static int Y_MARGIN = 500;
 
     public static int X_OFFSET = X_MARGIN;
     public static int Y_OFFSET = Y_MARGIN;
+    public static int X_DIRECTION_OFFSET = 0;
+    public static int Y_DIRECTION_OFFSET = 0;
 
     public static int SCREEN_WIDTH;
     public static int SCREEN_HEIGHT;
 
     public static int PER_WIDTH = 100;
-    public static int PER_HEIGHT = 100;
+    public static int PER_HEIGHT = 95;
 
 
-    public static int MAP_FPS = 40;
+    public static int MAP_FPS = 30;
     public static final byte MAP_TYPE_BACKGROUND = 0;
     public static final byte MAP_TYPE_TEMP = 1;
     public static final byte MAP_TYPE_FIRE = 2;
@@ -114,9 +118,8 @@ public class GameConfig {
         emys = new ArrayList<>();
         bombs = new ArrayList<>();
         door = new Door(this);
-        prop = new Prop(this);
         bomber = new Bomber(this, bombs);
-        setEmys();
+        generatePropAndEmys();
     }
 
     public Bitmap getInfoBackground() {
@@ -179,6 +182,24 @@ public class GameConfig {
         mapInfo.generateMap();
     }
 
+    private void generatePropAndEmys() {
+        switch (propType) {
+            case PROP_TYPE_LENGTH:
+                prop = new PropLength(this);
+                break;
+            case PROP_TYPE_COUNT:
+                prop = new PropCount(this);
+                break;
+            case PROP_TYPE_SPEED:
+                prop = new PropSpeed(this);
+                break;
+        }
+        emys.clear();
+        for (int i = 0; i < emyCount; i++) {
+            emys.add(new EmyBall(this));
+        }
+    }
+
     public void reStart() {
         X_OFFSET = X_MARGIN;
         Y_OFFSET = Y_MARGIN;
@@ -190,7 +211,7 @@ public class GameConfig {
         Bomb.resetLength();
         setMapLevel(mapLevel);
         generateMapInfo();
-        setEmys();
+        generatePropAndEmys();
     }
 
     public void nextLevel() {
@@ -202,7 +223,7 @@ public class GameConfig {
         mapLevel++;
         setMapLevel(mapLevel);
         generateMapInfo();
-        setEmys();
+        generatePropAndEmys();
     }
 
     public void setBombCount(int bombCount) {
@@ -228,12 +249,12 @@ public class GameConfig {
             case 1:
                 emyCount = 6;
                 percent = WALL_PERCENT_20;
-                propType = PROP_TYPE_COUNT;
+                propType = PROP_TYPE_LENGTH;
                 break;
             case 2:
                 emyCount = 6;
                 percent = WALL_PERCENT_20;
-                propType = PROP_TYPE_LENGTH;
+                propType = PROP_TYPE_COUNT;
                 break;
             case 3:
                 emyCount = 7;
@@ -275,13 +296,6 @@ public class GameConfig {
                 percent = WALL_PERCENT_50;
                 propType = PROP_TYPE_COUNT;
                 break;
-        }
-    }
-
-    private void setEmys() {
-        emys.clear();
-        for (int i = 0; i < emyCount; i++) {
-            emys.add(new EmyBall(this));
         }
     }
 

@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import com.unual.bomberman.AppCache;
 import com.unual.bomberman.GameConfig;
 import com.unual.bomberman.R;
+import com.unual.bomberman.interfaces.IControl;
 
 /**
  * Created by unual on 2017/7/12.
@@ -72,6 +73,8 @@ public class EmyBall extends MoveModel {
 
     @Override
     public void draw(Canvas canvas) {
+        changeDirectionCheck();
+        updateLocation();
         super.draw(canvas);
     }
 

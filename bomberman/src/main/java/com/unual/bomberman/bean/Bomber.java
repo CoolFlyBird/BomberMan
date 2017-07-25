@@ -2,6 +2,8 @@ package com.unual.bomberman.bean;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.util.Log;
 
 import com.unual.bomberman.AppCache;
 import com.unual.bomberman.GameConfig;
@@ -15,13 +17,15 @@ import java.util.List;
  */
 
 public class Bomber extends MoveModel implements IControl {
-    private boolean nextBomb;
     private List<Bomb> bombs;
-    private boolean mapMoved;
+    protected boolean nextBomb;
+    protected boolean mapMoved;
+    protected Location previousLocation;
 
 
     public Bomber(GameConfig gameConfig, List<Bomb> bombs) {
         super(gameConfig);
+        previousLocation = new Location();
         this.bombs = bombs;
         location = new Location();
         speed = new Speed();
@@ -56,19 +60,29 @@ public class Bomber extends MoveModel implements IControl {
 
     @Override
     protected void updateLocation() {
-        location.xOffset += speed.xSpeed;
-        location.yOffset += speed.ySpeed;
-        location.update();
-        if (location.x > 5 && location.x < 24) {
-            GameConfig.X_OFFSET -= speed.xSpeed * perWidth;
-            GameConfig.Y_OFFSET -= speed.ySpeed * perHeight;
-            mapMoved = true;
-        } else if (location.y > 4 && location.y < 9) {
-            GameConfig.X_OFFSET -= speed.xSpeed * perWidth;
-            GameConfig.Y_OFFSET -= speed.ySpeed * perHeight;
-            mapMoved = true;
-        } else {
-            mapMoved = false;
+        Log.e("123", "updateLocation()");
+        previousLocation.cloneFrom(location);
+        super.updateLocation();
+        if (nextDirection == IControl.DIRECTION_LEFT || nextDirection == IControl.DIRECTION_RIGHT)
+            GameConfig.X_OFFSET = GameConfig.X_OFFSET - (int) (speed.xSpeed * perWidth);
+        if (nextDirection == IControl.DIRECTION_UP || nextDirection == IControl.DIRECTION_DOWN)
+            GameConfig.Y_OFFSET = GameConfig.Y_OFFSET - (int) (speed.ySpeed * perHeight);
+        mapMoved = true;
+        switch (nextDirection) {
+            case DIRECTION_LEFT:
+            case DIRECTION_RIGHT:
+                GameConfig.X_DIRECTION_OFFSET = (int) (speed.xSpeed * perWidth);
+                GameConfig.Y_DIRECTION_OFFSET = 0;
+                break;
+            case DIRECTION_UP:
+            case DIRECTION_DOWN:
+                GameConfig.X_DIRECTION_OFFSET = 0;
+                GameConfig.Y_DIRECTION_OFFSET = (int) (speed.ySpeed * perHeight);
+                break;
+            default:
+                GameConfig.X_DIRECTION_OFFSET = 0;
+                GameConfig.Y_DIRECTION_OFFSET = 0;
+                break;
         }
     }
 
@@ -89,11 +103,12 @@ public class Bomber extends MoveModel implements IControl {
 
     @Override
     public void onCrossRoad() {
-
+        Log.e("123", "onCrossRoad()");
     }
 
     @Override
     public void onPoint() {
+        Log.e("123", "onPoint()");
         if (nextBomb && (mapInfo[location.x][location.y] != GameConfig.MAP_TYPE_TEMP)) {
             for (Bomb bomb : bombs) {
                 if (!bomb.isPlaced()) {
@@ -129,9 +144,19 @@ public class Bomber extends MoveModel implements IControl {
 
     @Override
     public boolean meetWith(BaseModel model) {
-        if (model instanceof Door) {
-            return (location.x == model.location.x) && (location.y == model.location.y);
-        }
         return location.meetWith(model.location);
     }
+
+    @Override
+    public void draw(Canvas canvas) {
+        if (previousLocation.equalWith(location) && nextDirection == IControl.DIRECTION_NONE && !nextBomb) {
+            mapMoved = false;
+        } else {
+            mapMoved = true;
+            changeDirectionCheck();
+            updateLocation();
+        }
+        super.draw(canvas);
+    }
+
 }

@@ -39,10 +39,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Paint.FontMetricsInt fontMetrics;
     private float rx, ry;
     private int r = 250;
-    private int padding = 100;
+    private int padding = 80;
     private float arx, ary;
     private int ar = 150;
-    private int apadding = 200;
+    private int apadding = 150;
     private boolean onPause;
     private long timePerFrame;
     List<MoveModel> removes = new ArrayList<>();
@@ -53,6 +53,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private PropModel prop;
     private GameConfig gameConfig;
     private ChapterCallback chapterCallback;
+    private int checkMeetCount = 0;
+    private long time;
 
     public GameView(Context context) {
         super(context);
@@ -212,12 +214,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 while (true) {
                     try {
                         if (onPause) break;
-                        long startTime = System.currentTimeMillis();
+                        time = System.currentTimeMillis();
                         if (bombs != null)
                             render();
-                        long renderTime = System.currentTimeMillis() - startTime;
-                        if (renderTime < timePerFrame)
-                            Thread.currentThread().sleep(timePerFrame - renderTime);
+                        time = System.currentTimeMillis() - time;
+                        if (time < timePerFrame)
+                            Thread.currentThread().sleep(timePerFrame - time);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -231,9 +233,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         try {
             canvas = mHolder.lockCanvas();
             if (canvas != null) {
-                canvas.drawColor(Color.WHITE);
                 canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.SRC);
-                if (bomber.isMapMoved()) chapterCallback.renderMap();
+                checkMeetCount++;
                 drawBomb(canvas);
                 prop.draw(canvas);
                 door.draw(canvas);
@@ -241,6 +242,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 drawEnemy(canvas);
                 drawButton(canvas);
                 drawInfo(canvas);
+                if (bomber.isMapMoved()) chapterCallback.renderMap();
             }
         } catch (Exception e) {
             Log.e("123", "gameview:" + e.getMessage());
@@ -263,8 +265,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         Rect mid = new Rect(GameConfig.SCREEN_WIDTH / 3, 0, GameConfig.SCREEN_WIDTH * 2 / 3, 150);
         Rect right = new Rect(GameConfig.SCREEN_WIDTH * 2 / 3, 0, GameConfig.SCREEN_WIDTH, 150);
         drawText(canvas, left, "TIME:199");
-        drawText(canvas, mid, "LEVEL:1");
-        drawText(canvas, right, "COUNT:6");
+        drawText(canvas, mid, "LEVEL:" + gameConfig.getMapLevel());
+        drawText(canvas, right, "COUNT:6" + gameConfig.getEmys().size());
     }
 
     public void drawText(Canvas canvas, Rect targetRect, String text) {
@@ -294,11 +296,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         } else {
             bomber.draw(canvas);
         }
-        if (prop.isShow() && bomber.meetWith(prop)) {
+        if ((checkMeetCount % (GameConfig.MAP_FPS / 2) == 0) && prop.isShow() && bomber.meetWith(prop)) {
             Bomb.increaseLength();
             prop.setEat(true);
         }
-        if (door.isShow() && emys.size() == 0 && bomber.meetWith(door)) {
+
+        if ((checkMeetCount % (GameConfig.MAP_FPS / 2) == 0) && door.isShow() && emys.size() == 0 && bomber.meetWith(door)) {
             post(new Runnable() {
                 @Override
                 public void run() {
@@ -329,12 +332,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             emys.removeAll(removes);
             removes.clear();
         }
-        for (MoveModel emy : emys) {
-            if (bomber.meetWith(emy)) {
-                bomber.die();
-            } else {
+        if ((checkMeetCount % (GameConfig.MAP_FPS / 2) == 0))
+            for (MoveModel emy : emys) {
+                if (bomber.meetWith(emy)) {
+                    bomber.die();
+                } else {
+                }
             }
-        }
     }
 
     private void drawBomb(Canvas canvas) {
@@ -358,6 +362,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         ry = height - r - padding;
         arx = width - ar - apadding;
         ary = height - ar - apadding;
+        if (chapterCallback != null)
+            chapterCallback.renderMap();
     }
 
     @Override

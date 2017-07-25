@@ -3,6 +3,7 @@ package com.unual.bomberman.bean;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.util.Log;
 
 import com.unual.bomberman.AppCache;
 import com.unual.bomberman.GameConfig;
@@ -90,39 +91,6 @@ public class Bomb extends BaseModel {
                 }
             }
         }, BOMB_TIME);
-    }
-
-    @Override
-    public void draw(Canvas canvas) {
-        if (isPlaced) {
-            if (boom) {
-                canvas.drawBitmap(center, GameConfig.X_OFFSET + (location.x + location.xOffset) * perWidth, GameConfig.Y_OFFSET + (location.y + location.yOffset) * perHeight, null);
-                if (upLength != 0) {
-                    for (int i = upLength; i > 0; i--) {
-                        canvas.drawBitmap(vertical, GameConfig.X_OFFSET + location.x * perWidth, GameConfig.Y_OFFSET + (location.y - i) * perHeight, null);
-                    }
-                }
-                if (leftLength != 0) {
-                    for (int i = leftLength; i > 0; i--) {
-                        canvas.drawBitmap(horizon, GameConfig.X_OFFSET + (location.x - i) * perWidth, GameConfig.Y_OFFSET + location.y * perHeight, null);
-                    }
-                }
-                if (rightLength != 0) {
-                    for (int i = rightLength; i > 0; i--) {
-                        canvas.drawBitmap(horizon, GameConfig.X_OFFSET + (location.x + i) * perWidth, GameConfig.Y_OFFSET + location.y * perHeight, null);
-                    }
-                }
-                if (downLength != 0) {
-                    for (int i = downLength; i > 0; i--) {
-                        canvas.drawBitmap(vertical, GameConfig.X_OFFSET + location.x * perWidth, GameConfig.Y_OFFSET + (location.y + i) * perHeight, null);
-                    }
-                }
-            } else {
-                canvas.drawBitmap(icon, GameConfig.X_OFFSET + (location.x + location.xOffset) * perWidth, GameConfig.Y_OFFSET + (location.y + location.yOffset) * perHeight, null);
-            }
-        } else {
-
-        }
     }
 
     public boolean canUp(int x, int y) {
@@ -240,6 +208,39 @@ public class Bomb extends BaseModel {
             rightLength = l;
         }
         return rightLength;
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
+        if (isPlaced) {
+            if (boom) {
+                canvas.drawBitmap(center, GameConfig.X_OFFSET + location.x * perWidth, GameConfig.Y_OFFSET + location.y * perHeight, null);
+                if (upLength != 0) {
+                    for (int i = upLength; i > 0; i--) {
+                        canvas.drawBitmap(vertical, GameConfig.X_OFFSET + location.x * perWidth, GameConfig.Y_OFFSET + (location.y - i) * perHeight, null);
+                    }
+                }
+                if (leftLength != 0) {
+                    for (int i = leftLength; i > 0; i--) {
+                        canvas.drawBitmap(horizon, GameConfig.X_OFFSET + (location.x - i) * perWidth, GameConfig.Y_OFFSET + location.y * perHeight, null);
+                    }
+                }
+                if (rightLength != 0) {
+                    for (int i = rightLength; i > 0; i--) {
+                        canvas.drawBitmap(horizon, GameConfig.X_OFFSET + (location.x + i) * perWidth, GameConfig.Y_OFFSET + location.y * perHeight, null);
+                    }
+                }
+                if (downLength != 0) {
+                    for (int i = downLength; i > 0; i--) {
+                        canvas.drawBitmap(vertical, GameConfig.X_OFFSET + location.x * perWidth, GameConfig.Y_OFFSET + (location.y + i) * perHeight, null);
+                    }
+                }
+            } else {
+                canvas.drawBitmap(icon, GameConfig.X_OFFSET + location.x * perWidth, GameConfig.Y_OFFSET + location.y * perHeight, null);
+            }
+        } else {
+
+        }
     }
 
     public interface BombCallback {

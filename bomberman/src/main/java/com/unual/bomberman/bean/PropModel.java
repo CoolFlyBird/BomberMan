@@ -48,6 +48,6 @@ public abstract class PropModel extends BaseModel {
     @Override
     public void draw(Canvas canvas) {
         if (isShow())
-            canvas.drawBitmap(icon, GameConfig.X_OFFSET + (location.x + location.xOffset) * perWidth, GameConfig.Y_OFFSET + (location.y + location.yOffset) * perHeight, null);
+            canvas.drawBitmap(icon, GameConfig.X_OFFSET + location.x * perWidth, GameConfig.Y_OFFSET + location.y * perHeight, null);
     }
 }

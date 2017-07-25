@@ -15,10 +15,21 @@ public class Location {
         float y_ = y + yOffset;
         float lx_ = location.x + location.xOffset;
         float ly_ = location.y + location.yOffset;
-        if (((x_ - lx_) * (x_ - lx_) + (y_ - ly_) * (y_ - ly_)) < 1) {
+        if (((x_ - lx_) * (x_ - lx_) + (y_ - ly_) * (y_ - ly_)) < 0.7 * 0.7) {
             return true;
         }
         return false;
+    }
+
+    public void cloneFrom(Location location) {
+        x = location.x;
+        y = location.y;
+        xOffset = location.xOffset;
+        yOffset = location.yOffset;
+    }
+
+    public boolean equalWith(Location location) {
+        return (x == location.x) && (y == location.y) && (Math.abs(xOffset - location.xOffset) < 10e-6) && (Math.abs(yOffset - location.yOffset) < 10e-6);
     }
 
     public void update() {

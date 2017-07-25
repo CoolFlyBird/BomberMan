@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Toast;
-
 import com.unual.bomberman.bean.Bomb;
 import com.unual.bomberman.interfaces.ChapterCallback;
 import com.unual.bomberman.view.GameView;
@@ -35,12 +34,10 @@ public class MainActivity extends Activity implements ChapterCallback {
         gameview.setZOrderOnTop(true);
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
         getWindow().getDecorView().setSystemUiVisibility(FLAG);
-        mapview.renderMap();
     }
 
     @Override

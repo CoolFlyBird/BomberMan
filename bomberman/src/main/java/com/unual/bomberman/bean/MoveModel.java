@@ -14,9 +14,7 @@ import com.unual.bomberman.interfaces.IControl;
  */
 
 public abstract class MoveModel extends BaseModel {
-    //    protected static int[] LEVEL = {22, 18, 15, 13, 11, 10, 9};
     protected static int[] LEVEL = {(int) (GameConfig.MAP_FPS / 1.2), (int) (GameConfig.MAP_FPS / 1.6), (int) (GameConfig.MAP_FPS / 2), (int) (GameConfig.MAP_FPS / 2.4), (int) (GameConfig.MAP_FPS / 2.8), (int) (GameConfig.MAP_FPS / 3.2), (int) (GameConfig.MAP_FPS / 3.6)};
-    //    protected static int[] LEVEL = {11, 9, 7, 6, 5, 4, 3};
     protected int nextDirection;
     protected float speed_value;
     protected Speed speed;
@@ -212,18 +210,15 @@ public abstract class MoveModel extends BaseModel {
 
     public void draw(Canvas canvas) {
         if (checkDeath()) die();
-        changeDirectionCheck();
-        updateLocation();
-
-        canvas.drawBitmap(icon, GameConfig.X_OFFSET + (location.x + location.xOffset) * perWidth, GameConfig.Y_OFFSET + (location.y + location.yOffset) * perHeight, null);
-        if (died_value >= GameConfig.MAP_FPS * 2 / 3 && died_value <= GameConfig.MAP_FPS * 2 * 2 / 3) {
-            canvas.drawBitmap(icon_x, GameConfig.X_OFFSET + (location.x + location.xOffset) * perWidth, GameConfig.Y_OFFSET + (location.y + location.yOffset) * perHeight, null);
-        } else if (died_value >= GameConfig.MAP_FPS * 2 * 2 / 3 && died_value <= GameConfig.MAP_FPS * 2) {
-            canvas.drawBitmap(icon_xx, GameConfig.X_OFFSET + (location.x + location.xOffset) * perWidth, GameConfig.Y_OFFSET + (location.y + location.yOffset) * perHeight, null);
-        } else if (died_value >= GameConfig.MAP_FPS * 2 && died_value <= GameConfig.MAP_FPS * 2 * 4 / 3) {
-            canvas.drawBitmap(icon_xxx, GameConfig.X_OFFSET + (location.x + location.xOffset) * perWidth, GameConfig.Y_OFFSET + (location.y + location.yOffset) * perHeight, null);
-        } else if (died_value >= GameConfig.MAP_FPS * 2 * 4 / 3) {
-            canvas.drawBitmap(icon_xxx, GameConfig.X_OFFSET + (location.x + location.xOffset) * perWidth, GameConfig.Y_OFFSET + (location.y + location.yOffset) * perHeight, null);
+        canvas.drawBitmap(icon, GameConfig.X_OFFSET + GameConfig.X_DIRECTION_OFFSET + (location.x + location.xOffset) * perWidth, GameConfig.Y_OFFSET + GameConfig.Y_DIRECTION_OFFSET + (location.y + location.yOffset) * perHeight, null);
+        if (died_value >= GameConfig.MAP_FPS / 3 && died_value <= GameConfig.MAP_FPS * 2 / 3) {
+            canvas.drawBitmap(icon_x, GameConfig.X_OFFSET + GameConfig.X_DIRECTION_OFFSET + (location.x + location.xOffset) * perWidth, GameConfig.Y_OFFSET + GameConfig.Y_DIRECTION_OFFSET + (location.y + location.yOffset) * perHeight, null);
+        } else if (died_value >= GameConfig.MAP_FPS * 2 / 3 && died_value <= GameConfig.MAP_FPS) {
+            canvas.drawBitmap(icon_xx, GameConfig.X_OFFSET + GameConfig.X_DIRECTION_OFFSET + (location.x + location.xOffset) * perWidth, GameConfig.Y_OFFSET + GameConfig.Y_DIRECTION_OFFSET + (location.y + location.yOffset) * perHeight, null);
+        } else if (died_value >= GameConfig.MAP_FPS && died_value <= GameConfig.MAP_FPS * 4 / 3) {
+            canvas.drawBitmap(icon_xxx, GameConfig.X_OFFSET + GameConfig.X_DIRECTION_OFFSET + (location.x + location.xOffset) * perWidth, GameConfig.Y_OFFSET + GameConfig.Y_DIRECTION_OFFSET + (location.y + location.yOffset) * perHeight, null);
+        } else if (died_value >= GameConfig.MAP_FPS * 4 / 3) {
+            canvas.drawBitmap(icon_xxx, GameConfig.X_OFFSET + GameConfig.X_DIRECTION_OFFSET + (location.x + location.xOffset) * perWidth, GameConfig.Y_OFFSET + GameConfig.Y_DIRECTION_OFFSET + (location.y + location.yOffset) * perHeight, null);
             removed = true;
         }
     }
