@@ -8,18 +8,17 @@ import android.graphics.Canvas;
 import com.unual.bomberman.AppCache;
 import com.unual.bomberman.GameConfig;
 import com.unual.bomberman.R;
-import com.unual.bomberman.interfaces.IControl;
 
 /**
  * Created by unual on 2017/7/12.
  */
 
-public class EmyBall extends MoveModel {
+public class EmySpeed extends MoveModel {
     private static final int PERCENT = 4;
     private int walkOverCrossRoadCount = 0;
     private int waitError = 0;
 
-    public EmyBall(GameConfig gameConfig) {
+    public EmySpeed(GameConfig gameConfig) {
         super(gameConfig);
         location = new Location();
         speed = new Speed();

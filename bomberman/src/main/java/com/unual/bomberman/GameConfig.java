@@ -7,7 +7,10 @@ import android.util.Log;
 
 import com.unual.bomberman.bean.Bomb;
 import com.unual.bomberman.bean.Bomber;
-import com.unual.bomberman.bean.EmyBall;
+import com.unual.bomberman.bean.EmyBase;
+import com.unual.bomberman.bean.EmySpeed;
+import com.unual.bomberman.bean.EmyThrough;
+import com.unual.bomberman.bean.EmyTrack;
 import com.unual.bomberman.bean.MoveModel;
 import com.unual.bomberman.bean.PropCount;
 import com.unual.bomberman.bean.Door;
@@ -76,7 +79,7 @@ public class GameConfig {
     private PropModel door;
     private PropModel prop;
     private int mapLevel;
-    private int emyCount;
+    private int type1 = 0, type2 = 0, type3 = 0, type4 = 0;
     private int bombCount;
     private int bombLength;
     private int bomberSpeed;
@@ -195,9 +198,19 @@ public class GameConfig {
                 break;
         }
         emys.clear();
-        for (int i = 0; i < emyCount; i++) {
-            emys.add(new EmyBall(this));
+        for (int i = 0; i < type1; i++) {
+            emys.add(new EmyBase(this));
         }
+        for (int i = 0; i < type2; i++) {
+            emys.add(new EmySpeed(this));
+        }
+        for (int i = 0; i < type3; i++) {
+            emys.add(new EmyTrack(this));
+        }
+        for (int i = 0; i < type4; i++) {
+            emys.add(new EmyThrough(this));
+        }
+
     }
 
     public void reStart() {
@@ -247,53 +260,51 @@ public class GameConfig {
         mapLevel = level;
         switch (level) {
             case 1:
-                emyCount = 6;
+                type1 = 6;
+                type2 = 0;
+                type3 = 0;
+                type4 = 0;
                 percent = WALL_PERCENT_20;
                 propType = PROP_TYPE_LENGTH;
                 break;
             case 2:
-                emyCount = 6;
+                type1 = 4;
+                type2 = 2;
+                type3 = 0;
+                type4 = 0;
                 percent = WALL_PERCENT_20;
                 propType = PROP_TYPE_COUNT;
                 break;
             case 3:
-                emyCount = 7;
+                type1 = 2;
+                type2 = 2;
+                type3 = 0;
+                type4 = 2;
                 percent = WALL_PERCENT_20;
                 propType = PROP_TYPE_SPEED;
                 break;
             case 4:
-                emyCount = 7;
+                type1 = 2;
+                type2 = 2;
+                type3 = 0;
+                type4 = 4;
                 percent = WALL_PERCENT_25;
                 propType = PROP_TYPE_COUNT;
                 break;
             case 5:
-                emyCount = 8;
+                type1 = 2;
+                type2 = 2;
+                type3 = 2;
+                type4 = 2;
                 percent = WALL_PERCENT_25;
                 propType = PROP_TYPE_LENGTH;
                 break;
             case 6:
-                emyCount = 8;
+                type1 = 0;
+                type2 = 3;
+                type3 = 3;
+                type4 = 3;
                 percent = WALL_PERCENT_25;
-                propType = PROP_TYPE_COUNT;
-                break;
-            case 7:
-                emyCount = 9;
-                percent = WALL_PERCENT_33;
-                propType = PROP_TYPE_COUNT;
-                break;
-            case 8:
-                emyCount = 9;
-                percent = WALL_PERCENT_33;
-                propType = PROP_TYPE_COUNT;
-                break;
-            case 9:
-                emyCount = 10;
-                percent = WALL_PERCENT_33;
-                propType = PROP_TYPE_TIMER;
-                break;
-            case 10:
-                emyCount = 10;
-                percent = WALL_PERCENT_50;
                 propType = PROP_TYPE_COUNT;
                 break;
         }

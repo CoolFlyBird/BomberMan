@@ -210,9 +210,29 @@ public class Bomb extends BaseModel {
         return rightLength;
     }
 
+    public void checkBoom() {
+        if (mapInfo[location.x][location.y] == GameConfig.MAP_TYPE_FIRE) {
+            boom = true;
+        } else {
+            if (location.yOffset < -0.5 && location.y > 0 && mapInfo[location.x][location.y - 1] == GameConfig.MAP_TYPE_FIRE) {
+                boom = true;
+            }
+            if (location.yOffset > 0.5 && location.y < GameConfig.HEIGHT_SIZE - 2 && mapInfo[location.x][location.y + 1] == GameConfig.MAP_TYPE_FIRE) {
+                boom = true;
+            }
+            if (location.xOffset < -0.5 && location.x > 0 && mapInfo[location.x - 1][location.y] == GameConfig.MAP_TYPE_FIRE) {
+                boom = true;
+            }
+            if (location.xOffset > 0.5 && location.x < GameConfig.WIDTH_SIZE - 2 && mapInfo[location.x + 1][location.y] == GameConfig.MAP_TYPE_FIRE) {
+                boom = true;
+            }
+        }
+    }
+
     @Override
     public void draw(Canvas canvas) {
         if (isPlaced) {
+            checkBoom();
             if (boom) {
                 canvas.drawBitmap(center, GameConfig.X_OFFSET + location.x * perWidth, GameConfig.Y_OFFSET + location.y * perHeight, null);
                 if (upLength != 0) {
