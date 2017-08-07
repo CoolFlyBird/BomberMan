@@ -1,10 +1,7 @@
 package com.unual.bomberman.bean;
 
 import android.graphics.Canvas;
-
 import com.unual.bomberman.GameConfig;
-
-import java.security.PublicKey;
 
 /**
  * Created by unual on 2017/7/19.

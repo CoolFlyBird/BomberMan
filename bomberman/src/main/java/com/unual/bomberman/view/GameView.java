@@ -20,8 +20,12 @@ import com.unual.bomberman.GameConfig;
 import com.unual.bomberman.R;
 import com.unual.bomberman.bean.Bomb;
 import com.unual.bomberman.bean.Bomber;
+import com.unual.bomberman.bean.EmyBase;
 import com.unual.bomberman.bean.MoveModel;
+import com.unual.bomberman.bean.PropCount;
+import com.unual.bomberman.bean.PropLength;
 import com.unual.bomberman.bean.PropModel;
+import com.unual.bomberman.bean.PropSpeed;
 import com.unual.bomberman.interfaces.ChapterCallback;
 import com.unual.bomberman.interfaces.IControl;
 
@@ -47,7 +51,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private long timePerFrame;
     List<MoveModel> removes = new ArrayList<>();
     private Bomber bomber;
-    private List<MoveModel> emys;
+    private List<EmyBase> emys;
     private List<Bomb> bombs;
     private PropModel door;
     private PropModel prop;
@@ -205,6 +209,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void startRender() {
         onPause = false;
+        prop = gameConfig.getProp();
         if (Looper.getMainLooper() != Looper.myLooper()) {
             Looper.prepare();
         }
@@ -215,8 +220,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     try {
                         if (onPause) break;
                         time = System.currentTimeMillis();
-                        if (bombs != null)
-                            render();
+                        render();
                         time = System.currentTimeMillis() - time;
                         if (time < timePerFrame)
                             Thread.currentThread().sleep(timePerFrame - time);
@@ -266,7 +270,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         Rect right = new Rect(GameConfig.SCREEN_WIDTH * 2 / 3, 0, GameConfig.SCREEN_WIDTH, 150);
         drawText(canvas, left, "TIME:199");
         drawText(canvas, mid, "LEVEL:" + gameConfig.getMapLevel());
-        drawText(canvas, right, "COUNT:6" + gameConfig.getEmys().size());
+        drawText(canvas, right, "COUNT:" + gameConfig.getEmys().size());
     }
 
     public void drawText(Canvas canvas, Rect targetRect, String text) {
@@ -297,7 +301,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             bomber.draw(canvas);
         }
         if ((checkMeetCount % (GameConfig.MAP_FPS / 2) == 0) && prop.isShow() && bomber.meetWith(prop)) {
-            Bomb.increaseLength();
+            if (prop instanceof PropCount) {
+                gameConfig.increaseCount();
+            } else if (prop instanceof PropLength) {
+                gameConfig.increaseLength();
+            } else if (prop instanceof PropSpeed) {
+                gameConfig.increaseSpeed();
+            } else {
+                Log.e("123", "Prop:" + prop);
+            }
             prop.setEat(true);
         }
 
@@ -321,7 +333,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void drawEnemy(Canvas canvas) {
-        for (MoveModel emy : emys) {
+        for (EmyBase emy : emys) {
             if (emy.isRemoved()) {
                 removes.add(emy);
             } else {
@@ -332,13 +344,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             emys.removeAll(removes);
             removes.clear();
         }
-        if ((checkMeetCount % (GameConfig.MAP_FPS / 2) == 0))
+        if ((checkMeetCount % (GameConfig.MAP_FPS / 2) == 0)) {
             for (MoveModel emy : emys) {
                 if (bomber.meetWith(emy)) {
                     bomber.die();
                 } else {
                 }
             }
+        }
     }
 
     private void drawBomb(Canvas canvas) {

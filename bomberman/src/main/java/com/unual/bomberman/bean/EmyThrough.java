@@ -1,10 +1,7 @@
 
 package com.unual.bomberman.bean;
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-
 import com.unual.bomberman.AppCache;
 import com.unual.bomberman.GameConfig;
 import com.unual.bomberman.R;
@@ -13,32 +10,61 @@ import com.unual.bomberman.R;
  * Created by unual on 2017/7/12.
  */
 
-public class EmyThrough extends MoveModel {
+public class EmyThrough extends EmyBase {
     private static final int PERCENT = 4;
     private int walkOverCrossRoadCount = 0;
     private int waitError = 0;
 
     public EmyThrough(GameConfig gameConfig) {
         super(gameConfig);
-        location = new Location();
-        speed = new Speed();
+        level = 0;
         speed_value = (float) (1.0 / LEVEL[level]);
-        icon = BitmapFactory.decodeResource(AppCache.getInstance().getContext().getResources(), R.drawable.game_view_ball);
+        icon = BitmapFactory.decodeResource(AppCache.getInstance().getContext().getResources(), R.drawable.game_view_emy_through);
         icon = Bitmap.createScaledBitmap(icon, perWidth, perHeight, false);
-        initLocation();
     }
 
     @Override
-    public void initLocation() {
-        int x = AppCache.getInstance().getRandom().nextInt(GameConfig.WIDTH_SIZE - 2) + 1;
-        int y = AppCache.getInstance().getRandom().nextInt(GameConfig.HEIGHT_SIZE - 2) + 1;
-        if ((x <= 3 && y <= 3) || mapInfo[x][y] != GameConfig.MAP_TYPE_BACKGROUND) {
-            initLocation();
-        } else {
-            location.x = x;
-            location.y = y;
-            setRandomDirection();
+    public boolean canUp(int x, int y) {
+        if (y < 1) {
+            return false;
         }
+        if (mapInfo[x][y - 1] < GameConfig.MAP_TYPE_TEMP) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean canLeft(int x, int y) {
+        if (x < 1) {
+            return false;
+        }
+        if (mapInfo[x - 1][y] < GameConfig.MAP_TYPE_TEMP) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean canRight(int x, int y) {
+        if (x >= GameConfig.WIDTH_SIZE - 1) {
+            return false;
+        }
+        if (mapInfo[x + 1][y] < GameConfig.MAP_TYPE_TEMP) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean canDown(int x, int y) {
+        if (y >= GameConfig.HEIGHT_SIZE - 1) {
+            return false;
+        }
+        if (mapInfo[x][y + 1] < GameConfig.MAP_TYPE_TEMP) {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -47,7 +73,6 @@ public class EmyThrough extends MoveModel {
         if (walkOverCrossRoadCount % PERCENT == 0)
             setRandomDirection();
     }
-
 
     @Override
     public void onPoint() {
@@ -60,21 +85,4 @@ public class EmyThrough extends MoveModel {
             setRandomDirection();
         }
     }
-
-    @Override
-    public boolean meetWith(BaseModel model) {
-        return false;
-    }
-
-    private void setRandomDirection() {
-        nextDirection = AppCache.getInstance().getRandom().nextInt(4) + 1;
-    }
-
-    @Override
-    public void draw(Canvas canvas) {
-        changeDirectionCheck();
-        updateLocation();
-        super.draw(canvas);
-    }
-
 }

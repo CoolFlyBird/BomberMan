@@ -12,16 +12,16 @@ public class InitApplication extends Application {
     public void onCreate() {
         super.onCreate();
         AppCache.getInstance().setContext(this);
-        AppCache.getInstance().setGameConfig(new GameConfig());
-        AppSharedPreferences.getInstance().loadConfig(AppCache.getInstance().getGameConfig());
+        GameConfig gameConfig = AppSharedPreferences.getInstance().createGameConfig();
+        AppCache.getInstance().setGameConfig(gameConfig);
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (AppCache.getInstance().getGameConfig() == null) {
-            AppCache.getInstance().setGameConfig(new GameConfig());
-            AppSharedPreferences.getInstance().loadConfig(AppCache.getInstance().getGameConfig());
+            GameConfig gameConfig = AppSharedPreferences.getInstance().createGameConfig();
+            AppCache.getInstance().setGameConfig(gameConfig);
         }
     }
 }

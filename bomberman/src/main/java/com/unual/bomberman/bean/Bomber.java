@@ -3,7 +3,6 @@ package com.unual.bomberman.bean;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.util.Log;
 
 import com.unual.bomberman.AppCache;
 import com.unual.bomberman.GameConfig;
@@ -60,7 +59,6 @@ public class Bomber extends MoveModel implements IControl {
 
     @Override
     protected void updateLocation() {
-        Log.e("123", "updateLocation()");
         previousLocation.cloneFrom(location);
         super.updateLocation();
         if (nextDirection == IControl.DIRECTION_LEFT || nextDirection == IControl.DIRECTION_RIGHT)
@@ -87,7 +85,7 @@ public class Bomber extends MoveModel implements IControl {
     }
 
     public void increaseSpeed() {
-        level++;
+        level += 2;
         if (level < LEVEL.length)
             speed_value = (float) (1.0 / LEVEL[level]);
     }
@@ -103,12 +101,10 @@ public class Bomber extends MoveModel implements IControl {
 
     @Override
     public void onCrossRoad() {
-        Log.e("123", "onCrossRoad()");
     }
 
     @Override
     public void onPoint() {
-        Log.e("123", "onPoint()");
         if (nextBomb && (mapInfo[location.x][location.y] != GameConfig.MAP_TYPE_TEMP)) {
             for (Bomb bomb : bombs) {
                 if (!bomb.isPlaced()) {

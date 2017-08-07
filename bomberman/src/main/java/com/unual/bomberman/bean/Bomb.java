@@ -3,7 +3,6 @@ package com.unual.bomberman.bean;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.util.Log;
 
 import com.unual.bomberman.AppCache;
 import com.unual.bomberman.GameConfig;
@@ -57,6 +56,10 @@ public class Bomb extends BaseModel {
 
     public static void increaseLength() {
         BOMB_LENGTH++;
+    }
+
+    public BombCallback getCallback() {
+        return callback;
     }
 
     public boolean isPlaced() {

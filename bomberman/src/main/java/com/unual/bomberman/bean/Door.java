@@ -2,8 +2,6 @@ package com.unual.bomberman.bean;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-
 import com.unual.bomberman.AppCache;
 import com.unual.bomberman.GameConfig;
 import com.unual.bomberman.R;

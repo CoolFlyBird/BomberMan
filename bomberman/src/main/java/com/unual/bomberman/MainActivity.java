@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Toast;
+
 import com.unual.bomberman.bean.Bomb;
 import com.unual.bomberman.interfaces.ChapterCallback;
 import com.unual.bomberman.view.GameView;
@@ -25,8 +26,10 @@ public class MainActivity extends Activity implements ChapterCallback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        Toast.makeText(getBaseContext(), "level " + AppCache.getInstance().getGameConfig().getMapLevel(), Toast.LENGTH_SHORT).show();
-        Log.e("123", "level:" + AppCache.getInstance().getGameConfig().getMapLevel() + ",length:" + Bomb.getBombLength() + ",count:" + AppCache.getInstance().getGameConfig().getBombCount());
+        Log.e("123", "level:" + AppCache.getInstance().getGameConfig().getMapLevel()
+                + ",length:" + AppCache.getInstance().getGameConfig().getBombLength()
+                + ",count:" + AppCache.getInstance().getGameConfig().getBombCount()
+                + ",speedlevel:" + AppCache.getInstance().getGameConfig().getSpeedLevel());
         setContentView(R.layout.activity_main);
         mapview = (MapView) findViewById(R.id.mapview);
         gameview = (GameView) findViewById(R.id.gameview);
@@ -52,32 +55,26 @@ public class MainActivity extends Activity implements ChapterCallback {
 
     @Override
     public void reStartGame() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getBaseContext(), "level " + AppCache.getInstance().getGameConfig().getMapLevel(), Toast.LENGTH_SHORT).show();
-            }
-        });
         AppCache.getInstance().getGameConfig().reStart();
         mapview.renderMap();
         gameview.startRender();
         AppSharedPreferences.getInstance().cleanGameConfig();
-        Log.e("123", "level:" + AppCache.getInstance().getGameConfig().getMapLevel() + ",length:" + Bomb.getBombLength() + ",count:" + AppCache.getInstance().getGameConfig().getBombCount());
+        Log.e("123", "level:" + AppCache.getInstance().getGameConfig().getMapLevel()
+                + ",length:" + AppCache.getInstance().getGameConfig().getBombLength()
+                + ",count:" + AppCache.getInstance().getGameConfig().getBombCount()
+                + ",speedlevel:" + AppCache.getInstance().getGameConfig().getSpeedLevel());
     }
 
     @Override
     public void nextChapter() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getBaseContext(), "level " + AppCache.getInstance().getGameConfig().getMapLevel(), Toast.LENGTH_SHORT).show();
-            }
-        });
         AppCache.getInstance().getGameConfig().nextLevel();
         mapview.renderMap();
         gameview.startRender();
         AppSharedPreferences.getInstance().setGameConfig(AppCache.getInstance().getGameConfig());
-        Log.e("123", "level:" + AppCache.getInstance().getGameConfig().getMapLevel() + ",length:" + Bomb.getBombLength() + ",count:" + AppCache.getInstance().getGameConfig().getBombCount());
+        Log.e("123", "level:" + AppCache.getInstance().getGameConfig().getMapLevel()
+                + ",length:" + AppCache.getInstance().getGameConfig().getBombLength()
+                + ",count:" + AppCache.getInstance().getGameConfig().getBombCount()
+                + ",speedlevel:" + AppCache.getInstance().getGameConfig().getSpeedLevel());
     }
 
 }

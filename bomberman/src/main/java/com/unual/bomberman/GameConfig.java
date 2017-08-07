@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.unual.bomberman.bean.Bomb;
 import com.unual.bomberman.bean.Bomber;
+import com.unual.bomberman.bean.EmyBall;
 import com.unual.bomberman.bean.EmyBase;
 import com.unual.bomberman.bean.EmySpeed;
 import com.unual.bomberman.bean.EmyThrough;
@@ -50,9 +51,9 @@ public class GameConfig {
 
     public static int MAP_FPS = 30;
     public static final byte MAP_TYPE_BACKGROUND = 0;
-    public static final byte MAP_TYPE_TEMP = 1;
-    public static final byte MAP_TYPE_FIRE = 2;
-    public static final byte MAP_TYPE_WALL = 3;
+    public static final byte MAP_TYPE_FIRE = 1;
+    public static final byte MAP_TYPE_WALL = 2;
+    public static final byte MAP_TYPE_TEMP = 3;
     public static final byte MAP_TYPE_BRICK = 4;
 
     public static final byte PROP_TYPE_LENGTH = 1;
@@ -73,7 +74,7 @@ public class GameConfig {
     private MapInfo mapInfo;
     private int propType;
     private int percent;
-    private List<MoveModel> emys;
+    private List<EmyBase> emys;
     private List<Bomb> bombs;
     private Bomber bomber;
     private PropModel door;
@@ -85,12 +86,14 @@ public class GameConfig {
     private int bomberSpeed;
 
 
-    public GameConfig() {
+    public GameConfig(int maplevel, int bombcount, int bomblength, int bomberspeed) {
         /**
          * map size
          */
-        mapLevel = 1;
-        bombCount = 1;
+        mapLevel = maplevel;
+        bombCount = bombcount;
+        bombLength = bomblength;
+        bomberSpeed = bomberspeed;
 //        PER_WIDTH = MAP_WIDTH / WIDTH_SIZE;
 //        PER_HEIGHT = MAP_HEIGHT / HEIGHT_SIZE;
 
@@ -122,6 +125,8 @@ public class GameConfig {
         bombs = new ArrayList<>();
         door = new Door(this);
         bomber = new Bomber(this, bombs);
+        Bomb.setBombLength(bombLength);
+        bomber.setSpeedLevel(bomberSpeed);
         generatePropAndEmys();
     }
 
@@ -157,11 +162,7 @@ public class GameConfig {
         return percent;
     }
 
-    public int getBombCount() {
-        return bombCount;
-    }
-
-    public List<MoveModel> getEmys() {
+    public List<EmyBase> getEmys() {
         return emys;
     }
 
@@ -199,13 +200,13 @@ public class GameConfig {
         }
         emys.clear();
         for (int i = 0; i < type1; i++) {
-            emys.add(new EmyBase(this));
+            emys.add(new EmyBall(this));
         }
         for (int i = 0; i < type2; i++) {
             emys.add(new EmySpeed(this));
         }
         for (int i = 0; i < type3; i++) {
-            emys.add(new EmyTrack(this));
+            emys.add(new EmyTrack(this, bomber));
         }
         for (int i = 0; i < type4; i++) {
             emys.add(new EmyThrough(this));
@@ -220,7 +221,6 @@ public class GameConfig {
         bombCount = 1;
         bomber.reset();
         door.reset();
-        prop.reset();
         Bomb.resetLength();
         setMapLevel(mapLevel);
         generateMapInfo();
@@ -232,7 +232,6 @@ public class GameConfig {
         Y_OFFSET = Y_MARGIN;
         bomber.reset();
         door.reset();
-        prop.reset();
         mapLevel++;
         setMapLevel(mapLevel);
         generateMapInfo();
@@ -248,6 +247,34 @@ public class GameConfig {
         Bomb.setBombLength(bombLength);
     }
 
+    /**************************/
+    public int getBombCount() {
+        return bombCount;
+    }
+
+    public int getBombLength() {
+        return Bomb.getBombLength();
+    }
+
+    public int getSpeedLevel() {
+        return bomber.getSpeedLevel();
+    }
+
+    /**************************/
+    public void increaseCount() {
+        setBombCount(getBombCount() + 1);
+        bombs.add(new Bomb(this, bombs.get(0).getCallback()));
+    }
+
+    public void increaseLength() {
+        Bomb.increaseLength();
+    }
+
+    public void increaseSpeed() {
+        bomber.increaseSpeed();
+    }
+
+    /**************************/
     public void setBomberSpeed(int bomberSpeed) {
         this.bomberSpeed = bomberSpeed;
     }
@@ -259,7 +286,7 @@ public class GameConfig {
     private void setMapLevel(int level) {
         mapLevel = level;
         switch (level) {
-            case 1:
+            case 1://6
                 type1 = 6;
                 type2 = 0;
                 type3 = 0;
@@ -267,7 +294,7 @@ public class GameConfig {
                 percent = WALL_PERCENT_20;
                 propType = PROP_TYPE_LENGTH;
                 break;
-            case 2:
+            case 2://6
                 type1 = 4;
                 type2 = 2;
                 type3 = 0;
@@ -275,7 +302,7 @@ public class GameConfig {
                 percent = WALL_PERCENT_20;
                 propType = PROP_TYPE_COUNT;
                 break;
-            case 3:
+            case 3://6
                 type1 = 2;
                 type2 = 2;
                 type3 = 0;
@@ -283,7 +310,7 @@ public class GameConfig {
                 percent = WALL_PERCENT_20;
                 propType = PROP_TYPE_SPEED;
                 break;
-            case 4:
+            case 4://8
                 type1 = 2;
                 type2 = 2;
                 type3 = 0;
@@ -291,7 +318,7 @@ public class GameConfig {
                 percent = WALL_PERCENT_25;
                 propType = PROP_TYPE_COUNT;
                 break;
-            case 5:
+            case 5://8
                 type1 = 2;
                 type2 = 2;
                 type3 = 2;
@@ -299,7 +326,7 @@ public class GameConfig {
                 percent = WALL_PERCENT_25;
                 propType = PROP_TYPE_LENGTH;
                 break;
-            case 6:
+            case 6://9
                 type1 = 0;
                 type2 = 3;
                 type3 = 3;

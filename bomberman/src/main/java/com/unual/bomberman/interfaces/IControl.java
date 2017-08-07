@@ -7,8 +7,8 @@ package com.unual.bomberman.interfaces;
 public interface IControl {
     int DIRECTION_NONE = 0;
     int DIRECTION_UP = 1;
-    int DIRECTION_DOWN = 2;
-    int DIRECTION_LEFT = 3;
+    int DIRECTION_LEFT = 2;
+    int DIRECTION_DOWN = 3;
     int DIRECTION_RIGHT = 4;
 
     int ACTION_A = 6;

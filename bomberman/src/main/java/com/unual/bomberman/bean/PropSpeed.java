@@ -15,7 +15,7 @@ public class PropSpeed extends PropModel {
 
     public PropSpeed(GameConfig gameConfig) {
         super(gameConfig);
-        icon = BitmapFactory.decodeResource(AppCache.getInstance().getContext().getResources(), R.drawable.game_view_prop_bomb);
+        icon = BitmapFactory.decodeResource(AppCache.getInstance().getContext().getResources(), R.drawable.game_view_prop_speed);
         icon = Bitmap.createScaledBitmap(icon, perWidth, perHeight, false);
     }
 }

@@ -3,7 +3,6 @@ package com.unual.bomberman.bean;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-
 import com.unual.bomberman.AppCache;
 import com.unual.bomberman.GameConfig;
 import com.unual.bomberman.R;
@@ -14,7 +13,15 @@ import com.unual.bomberman.interfaces.IControl;
  */
 
 public abstract class MoveModel extends BaseModel {
-    protected static int[] LEVEL = {(int) (GameConfig.MAP_FPS / 1.2), (int) (GameConfig.MAP_FPS / 1.6), (int) (GameConfig.MAP_FPS / 2), (int) (GameConfig.MAP_FPS / 2.4), (int) (GameConfig.MAP_FPS / 2.8), (int) (GameConfig.MAP_FPS / 3.2), (int) (GameConfig.MAP_FPS / 3.6)};
+    protected static int[] LEVEL = {
+            (int) (GameConfig.MAP_FPS / 1.2),//level 0
+            (int) (GameConfig.MAP_FPS / 1.6),//level 1
+            (int) (GameConfig.MAP_FPS / 2.0),  //level 2
+            (int) (GameConfig.MAP_FPS / 2.4),//level 3
+            (int) (GameConfig.MAP_FPS / 2.8),//level 4
+            (int) (GameConfig.MAP_FPS / 3.2),//level 5
+            (int) (GameConfig.MAP_FPS / 3.6) //level 6
+    };
     protected int nextDirection;
     protected float speed_value;
     protected Speed speed;
@@ -70,7 +77,7 @@ public abstract class MoveModel extends BaseModel {
         if (y < 1) {
             return false;
         }
-        if (mapInfo[x][y - 1] == GameConfig.MAP_TYPE_BACKGROUND || mapInfo[x][y - 1] == GameConfig.MAP_TYPE_FIRE) {
+        if (mapInfo[x][y - 1] < GameConfig.MAP_TYPE_WALL) {
             return true;
         }
         return false;
@@ -80,7 +87,7 @@ public abstract class MoveModel extends BaseModel {
         if (x < 1) {
             return false;
         }
-        if (mapInfo[x - 1][y] == GameConfig.MAP_TYPE_BACKGROUND || mapInfo[x - 1][y] == GameConfig.MAP_TYPE_FIRE) {
+        if (mapInfo[x - 1][y] < GameConfig.MAP_TYPE_WALL) {
             return true;
         }
         return false;
@@ -90,7 +97,7 @@ public abstract class MoveModel extends BaseModel {
         if (x >= GameConfig.WIDTH_SIZE - 1) {
             return false;
         }
-        if (mapInfo[x + 1][y] == GameConfig.MAP_TYPE_BACKGROUND || mapInfo[x + 1][y] == GameConfig.MAP_TYPE_FIRE) {
+        if (mapInfo[x + 1][y] < GameConfig.MAP_TYPE_WALL) {
             return true;
         }
         return false;
@@ -100,7 +107,7 @@ public abstract class MoveModel extends BaseModel {
         if (y >= GameConfig.HEIGHT_SIZE - 1) {
             return false;
         }
-        if (mapInfo[x][y + 1] == GameConfig.MAP_TYPE_BACKGROUND || mapInfo[x][y + 1] == GameConfig.MAP_TYPE_FIRE) {
+        if (mapInfo[x][y + 1] < GameConfig.MAP_TYPE_WALL) {
             return true;
         }
         return false;
@@ -210,6 +217,7 @@ public abstract class MoveModel extends BaseModel {
 
     public void draw(Canvas canvas) {
         if (checkDeath()) die();
+        if(icon!=null)
         canvas.drawBitmap(icon, GameConfig.X_OFFSET + GameConfig.X_DIRECTION_OFFSET + (location.x + location.xOffset) * perWidth, GameConfig.Y_OFFSET + GameConfig.Y_DIRECTION_OFFSET + (location.y + location.yOffset) * perHeight, null);
         if (died_value >= GameConfig.MAP_FPS / 3 && died_value <= GameConfig.MAP_FPS * 2 / 3) {
             canvas.drawBitmap(icon_x, GameConfig.X_OFFSET + GameConfig.X_DIRECTION_OFFSET + (location.x + location.xOffset) * perWidth, GameConfig.Y_OFFSET + GameConfig.Y_DIRECTION_OFFSET + (location.y + location.yOffset) * perHeight, null);

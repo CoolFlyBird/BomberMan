@@ -27,11 +27,12 @@ public class AppSharedPreferences {
         return mInstance;
     }
 
-    public void loadConfig(GameConfig gameConfig) {
-        gameConfig.setBombCount(spf.getInt("bombcount", 1));
-        gameConfig.setBombLength(spf.getInt("bomblength", 1));
-        gameConfig.setBomberSpeed(spf.getInt("bomberspeed", 2));
-        gameConfig.setLevel(spf.getInt("maplevel", 1));
+    public GameConfig createGameConfig() {
+        int bombcount = spf.getInt("bombcount", 1);
+        int bomblength = spf.getInt("bomblength", 1);
+        int bomberspeed = spf.getInt("bomberspeed", 2);
+        int maplevel = spf.getInt("maplevel", 1);
+        return new GameConfig(maplevel, bombcount, bomblength, bomberspeed);
     }
 
     public void cleanGameConfig() {
@@ -44,8 +45,8 @@ public class AppSharedPreferences {
 
     public void setGameConfig(GameConfig gameConfig) {
         editor.putInt("bombcount", gameConfig.getBombCount());
-        editor.putInt("bomblength", Bomb.getBombLength());
-        editor.putInt("bomberspeed", gameConfig.getBomber().getSpeedLevel());
+        editor.putInt("bomblength", gameConfig.getBombLength());
+        editor.putInt("bomberspeed", gameConfig.getSpeedLevel());
         editor.putInt("maplevel", gameConfig.getMapLevel());
         editor.commit();
     }

@@ -1,31 +1,19 @@
-
 package com.unual.bomberman.bean;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-
 import com.unual.bomberman.AppCache;
 import com.unual.bomberman.GameConfig;
-import com.unual.bomberman.R;
-import com.unual.bomberman.interfaces.IControl;
 
 /**
  * Created by unual on 2017/7/12.
  */
 
 public class EmyBase extends MoveModel {
-    private static final int PERCENT = 4;
-    private int walkOverCrossRoadCount = 0;
-    private int waitError = 0;
 
     public EmyBase(GameConfig gameConfig) {
         super(gameConfig);
         location = new Location();
         speed = new Speed();
-        speed_value = (float) (1.0 / LEVEL[level]);
-        icon = BitmapFactory.decodeResource(AppCache.getInstance().getContext().getResources(), R.drawable.game_view_ball);
-        icon = Bitmap.createScaledBitmap(icon, perWidth, perHeight, false);
         initLocation();
     }
 
@@ -44,9 +32,6 @@ public class EmyBase extends MoveModel {
 
     @Override
     public void onCrossRoad() {
-        walkOverCrossRoadCount++;
-        if (walkOverCrossRoadCount % PERCENT == 0)
-            setRandomDirection();
     }
 
 
@@ -55,11 +40,6 @@ public class EmyBase extends MoveModel {
     }
 
     public void onDirectionError() {
-        waitError++;
-        if (waitError == GameConfig.MAP_FPS / 3) {
-            waitError = 0;
-            setRandomDirection();
-        }
     }
 
     @Override
@@ -67,7 +47,7 @@ public class EmyBase extends MoveModel {
         return false;
     }
 
-    private void setRandomDirection() {
+    protected void setRandomDirection() {
         nextDirection = AppCache.getInstance().getRandom().nextInt(4) + 1;
     }
 
